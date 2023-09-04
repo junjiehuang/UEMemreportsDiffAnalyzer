@@ -1,2 +1,3 @@
-# UEMemreportsDiffAnalyzer
-Analyze 1/2 ue memreports and output the diff to a csv file.
+ue memreport 差量分析工具
+================
+对指定的两个memreport文件进行差量分析，并把结果输出到指定的csv文件。方便对内存进行差量分析。

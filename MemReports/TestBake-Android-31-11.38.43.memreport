@@ -1,0 +1,542 @@
+CommandLine Options:  
+Time Since Boot: 81.08 Seconds
+
+Platform Memory Stats for Android
+Process Physical Memory: 309.71 MB used, 311.15 MB peak
+Process Virtual Memory: 2057.38 MB used, 2087.72 MB peak
+Physical Memory: 3531.01 MB used,  2130.92 MB free, 5661.93 MB total
+Virtual Memory: 1255.29 MB used,  2130.92 MB free, 2800.00 MB total
+
+Allocator Stats for binned:
+Current Memory 72.27 MB used, plus 2.81 MB waste
+Peak Memory 73.68 MB used, plus 2.72 MB waste
+Current OS Memory 75.08 MB, peak 76.41 MB
+Current Waste 1.01 MB, peak 1.01 MB
+Current Used 72.27 MB, peak 73.68 MB
+Current Slack 0.29 MB
+Allocs        148926 Current /   2696475 Total
+
+ Block Size  Num Pools  Max Pools  Cur Allocs  Total Allocs  Min Req  Max Req  Mem Used  Mem Slack  Mem Waste  Efficiency
+ ----------  ---------  ---------  ----------  ------------  -------  -------  --------  ---------  ---------  ----------
+          8          3          3       19586        199755        8        8      153K        39K         0K     100.00%
+         16          7          7       25012        366822        9       16      390K        58K        24K      94.64%
+         32         10         10       20348        288012       17       32      635K         5K        51K      92.03%
+         48         16         16       20639        230667       33       48      967K        57K        90K      91.21%
+         64         18         20       17522        222842       49       64     1095K        57K        87K      92.45%
+         80         10         11        6324        293672       65       80      494K       146K        29K      95.47%
+         96          6          6        3638        292213       81       96      341K        43K        17K      95.57%
+        112          4         14        2026         76404       97      112      221K        35K        13K      94.92%
+        128         20         27        8585         93823      113      128     1073K       207K        58K      95.47%
+        160          8         10        2599         99649      129      160      406K       106K        29K      94.34%
+        192          7          7        2226        150422      161      192      417K        31K        29K      93.53%
+        224          4          4         901         34865      193      224      197K        59K        15K      94.14%
+        256          6          7        1379         18360      225      256      344K        40K        16K      95.83%
+        288         13         22        2740         77309      257      288      770K        60K        43K      94.83%
+        320          5         18         962         26781      290      320      300K        19K        14K      95.62%
+        384         22         22        3635         19422      321      384     1363K        40K        88K      93.75%
+        448          5          5         645         19921      385      448      282K        38K        23K      92.81%
+        512         12         12        1367         24216      450      512      683K        85K        10K      98.70%
+        576         19         20        2139          4832      513      576     1203K         5K        61K      94.98%
+        640          5          5         457          5422      578      640      285K        34K         2K      99.38%
+        704          5          5         391          3342      641      704      268K        52K         2K      99.38%
+        768         37         40        2757          9529      706      768     2067K       292K       104K      95.61%
+        896          6          6         429          2574      769      896      375K         9K        16K      95.83%
+       1024          4          4         200         24729      898     1024      200K        56K         3K      98.83%
+       1168          5          5         246          5868     1026     1168      280K        40K        21K      93.44%
+       1360         10         11         369          1345     1169     1360      490K       148K        33K      94.84%
+       1632          6          6         213          5116     1363     1632      339K        44K        38K      90.10%
+       2048         13         13         383          1204     1633     2048      766K        66K        70K      91.59%
+       2336          6          6         142          7929     2050     2335      323K        61K        20K      94.79%
+       2720          7          7         156           675     2340     2720      414K        33K        22K      95.09%
+       3264          9          9         167         14253     2722     3264      532K        42K        42K      92.71%
+       4096         10         10         151           628     3267     4096      604K        36K        81K      87.34%
+       4672          5          5          66         13231     4100     4667      301K        19K        10K      96.88%
+       5456          4          4          40           228     4679     5456      213K        43K        18K      92.97%
+       6544          2          2          15           141     5468     6528       95K        33K         7K      94.53%
+       8192         13         13         102          3692     6560     8192      816K        16K        92K      88.94%
+       9360          6          6          35          4446     8200     9360      319K        65K         9K      97.66%
+      10912          3          4          17         13022     9372    10592      181K        11K        11K      94.27%
+      13104          6          7          27           163    11131    13088      345K        39K        26K      93.23%
+      16384          6          7          24          3989    13120    16384      384K         0K         3K      99.22%
+      21840         12         12          34           218    16392    21840      725K        43K       112K      85.42%
+      32768          7         10          14           169    21852    32640      448K         0K        74K      83.48%
+
+24448K (23.875MB) allocated in pools (with 2312K slack and 1513K waste). Efficiency 93.81%
+Allocations 148708 Current / 2661900 Total (in 382 pools)
+
+Memory Stats:
+FMemStack (gamethread) current size = 0.00 MB
+FPageAllocator (all threads) allocation size [used/ unused] = [0.00 / 0.19] MB
+Nametable memory usage = 2.01 MB
+AssetRegistry memory usage = 0.18 MB
+           16384  -  Light interaction memory - STAT_LightInteractionMemory - STATGROUP_SceneMemory - STATCAT_Advanced
+          173304  -  Rendering mem stack memory - STAT_RenderingMemStackMemory - STATGROUP_SceneMemory - STATCAT_Advanced
+            6256  -  ViewState memory - STAT_ViewStateMemory - STATGROUP_SceneMemory - STATCAT_Advanced
+           28648  -  Scene memory - STAT_RenderingSceneMemory - STATGROUP_SceneMemory - STATCAT_Advanced
+            7376  -  Static draw list memory - STAT_StaticDrawListMemory - STATGROUP_SceneMemory - STATCAT_Advanced
+           10832  -  Primitive memory - STAT_PrimitiveInfoMemory - STATGROUP_SceneMemory - STATCAT_Advanced
+           58700  -  Shader MapMemory - STAT_Shaders_ShaderMapMemory - STATGROUP_Shaders - STATCAT_Advanced
+         3021110  -  Shader Memory - STAT_Shaders_ShaderMemory - STATGROUP_Shaders - STATCAT_Advanced
+  18446744073709449652  -  Shader Resource Mem - STAT_Shaders_ShaderResourceMemory - STATGROUP_Shaders - STATCAT_Advanced
+         1019455  -  Shader Code Memory - STAT_Shaders_ShaderCodeMemory - STATGROUP_Shaders - STATCAT_Advanced
+        25041760  -  Render target memory 2D - STAT_RenderTargetMemory2D - STATGROUP_RHI - STATCAT_Advanced
+           57680  -  Uniform buffer memory - STAT_UniformBufferMemory - STATGROUP_RHI - STATCAT_Advanced
+        10186001  -  Texture memory 2D - STAT_TextureMemory2D - STATGROUP_RHI - STATCAT_Advanced
+               8  -  Texture memory 3D - STAT_TextureMemory3D - STATGROUP_RHI - STATCAT_Advanced
+               0  -  Pixel buffer memory - STAT_PixelBufferMemory - STATGROUP_RHI - STATCAT_Advanced
+           33096  -  Texture memory Cube - STAT_TextureMemoryCube - STATGROUP_RHI - STATCAT_Advanced
+         1236722  -  Index buffer memory - STAT_IndexBufferMemory - STATGROUP_RHI - STATCAT_Advanced
+        10203808  -  Vertex buffer memory - STAT_VertexBufferMemory - STATGROUP_RHI - STATCAT_Advanced
+               0  -  PageAllocator Used - STAT_PageAllocatorUsed - STATGROUP_Memory - STATCAT_Advanced
+          196608  -  PageAllocator Free - STAT_PageAllocatorFree - STATGROUP_Memory - STATCAT_Advanced
+           81968  -  Navigation Memory - STAT_NavigationMemory - STATGROUP_Memory - STATCAT_Advanced
+               0  -  Volumetric Lightmap Memory - STAT_PrecomputedVolumetricLightmapMemory - STATGROUP_Memory - STATCAT_Advanced
+             692  -  Persistent Uber Graph Frame memory - STAT_PersistentUberGraphFrameMemory - STATGROUP_Memory - STATCAT_Advanced
+          672685  -  PhysX TriMesh Used - STAT_MemoryTriMeshAllocationSize - STATGROUP_Memory - STATCAT_Advanced
+         1621392  -  StaticMesh Total Memory - STAT_StaticMeshTotalMemory - STATGROUP_Memory - STATCAT_Advanced
+         3255985  -  Texture Memory Used - STAT_TextureMemory - STATGROUP_Memory - STATCAT_Advanced
+               0  -  FArchiveAsync2 Buffers - STAT_FArchiveAsync2Mem - STATGROUP_Memory - STATCAT_Advanced
+         6041832  -  Async File Handle Memory - STAT_AsyncFileMemory - STATGROUP_Memory - STATCAT_Advanced
+         1638752  -  PhysX Memory Used - STAT_MemoryPhysXTotalAllocationSize - STATGROUP_Memory - STATCAT_Advanced
+         2804608  -  Used Streaming Pool [Wanted] - MCR_UsedStreamingPool - STATGROUP_Memory - STATCAT_Advanced
+       283356032  -  Streaming Texture Pool [Streaming] - MCR_StreamingPool - STATGROUP_Memory - STATCAT_Advanced
+       314572800  -  Texture Memory Pool [Texture] - MCR_TexturePool - STATGROUP_Memory - STATCAT_Advanced
+               0  -  GPU Memory Pool [GPU] - MCR_GPU - STATGROUP_Memory - STATCAT_Advanced
+               0  -  Total Physical Memory Pool (CPU + GPU) [PhysicalLLM] - MCR_PhysicalLLM - STATGROUP_Memory - STATCAT_Advanced
+               0  -  Physical Memory Pool [Physical] - MCR_Physical - STATGROUP_Memory - STATCAT_Advanced
+          543232  -  ICU Data File Memory Used - STAT_MemoryICUDataFileAllocationSize - STATGROUP_Memory - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WorldSpecularHD - STAT_TEXTUREGROUP_WorldSpecularHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WorldNormalMapHD - STAT_TEXTUREGROUP_WorldNormalMapHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WorldHD - STAT_TEXTUREGROUP_WorldHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WeaponSpecularHD - STAT_TEXTUREGROUP_WeaponSpecularHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WeaponNormalMapHD - STAT_TEXTUREGROUP_WeaponNormalMapHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WeaponHD - STAT_TEXTUREGROUP_WeaponHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_CharacterSpecularHD - STAT_TEXTUREGROUP_CharacterSpecularHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_CharacterNormalMapHD - STAT_TEXTUREGROUP_CharacterNormalMapHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_CharacterHD - STAT_TEXTUREGROUP_CharacterHD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_MaskedBillboard - STAT_TEXTUREGROUP_MaskedBillboard - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_TerrainAlbedo - STAT_TEXTUREGROUP_TerrainAlbedo - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_HierarchicalLOD - STAT_TEXTUREGROUP_HierarchicalLOD - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Pixels2D - STAT_TEXTUREGROUP_Pixels2D - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_IESLightProfile - STAT_TEXTUREGROUP_IESLightProfile - STATGROUP_TextureGroup - STATCAT_Advanced
+               4  -  TEXTUREGROUP_Bokeh - STAT_TEXTUREGROUP_Bokeh - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Terrain_Weightmap - STAT_TEXTUREGROUP_Terrain_Weightmap - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Terrain_Heightmap - STAT_TEXTUREGROUP_Terrain_Heightmap - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_ColorLookupTable - STAT_TEXTUREGROUP_ColorLookupTable - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Shadowmap - STAT_TEXTUREGROUP_Shadowmap - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_ProcBuilding_LightMap - STAT_TEXTUREGROUP_ProcBuilding_LightMap - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_ProcBuilding_Face - STAT_TEXTUREGROUP_ProcBuilding_Face - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_MobileFlattened - STAT_TEXTUREGROUP_MobileFlattened - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_RenderTarget - STAT_TEXTUREGROUP_RenderTarget - STATGROUP_TextureGroup - STATCAT_Advanced
+            5504  -  TEXTUREGROUP_Lightmap - STAT_TEXTUREGROUP_Lightmap - STATGROUP_TextureGroup - STATCAT_Advanced
+          415061  -  TEXTUREGROUP_UI - STAT_TEXTUREGROUP_UI - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Skybox - STAT_TEXTUREGROUP_Skybox - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_EffectsNotFiltered - STAT_TEXTUREGROUP_EffectsNotFiltered - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Effects - STAT_TEXTUREGROUP_Effects - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Cinematic - STAT_TEXTUREGROUP_Cinematic - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_VehicleSpecular - STAT_TEXTUREGROUP_VehicleSpecular - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_VehicleNormalMap - STAT_TEXTUREGROUP_VehicleNormalMap - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Vehicle - STAT_TEXTUREGROUP_Vehicle - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WeaponSpecular - STAT_TEXTUREGROUP_WeaponSpecular - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WeaponNormalMap - STAT_TEXTUREGROUP_WeaponNormalMap - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Weapon - STAT_TEXTUREGROUP_Weapon - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_CharacterSpecular - STAT_TEXTUREGROUP_CharacterSpecular - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_CharacterNormalMap - STAT_TEXTUREGROUP_CharacterNormalMap - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_Character - STAT_TEXTUREGROUP_Character - STATGROUP_TextureGroup - STATCAT_Advanced
+               0  -  TEXTUREGROUP_WorldSpecular - STAT_TEXTUREGROUP_WorldSpecular - STATGROUP_TextureGroup - STATCAT_Advanced
+              16  -  TEXTUREGROUP_WorldNormalMap - STAT_TEXTUREGROUP_WorldNormalMap - STATGROUP_TextureGroup - STATCAT_Advanced
+         2835400  -  TEXTUREGROUP_World - STAT_TEXTUREGROUP_World - STATGROUP_TextureGroup - STATCAT_Advanced
+Total (only for compare) 638.048MB
+
+
+
+
+
+
+Obj List: -alphasort
+Objects:
+
+                                                                                                Class    Count      NumKB      MaxKB   ResExcKB  ResExcDedSysKB  ResExcShrSysKB  ResExcDedVidKB  ResExcShrVidKB     ResExcUnkKB
+                                                                                      AbstractNavData        1       1.00       1.00       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                   AIPerceptionSystem        1       0.23       0.23       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                             AISystem        1       0.23       0.23       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                       AndroidPermissionCallbackProxy        1       0.05       0.05       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        ArrayProperty     1212     113.62     113.62       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         AssetManager        1       0.72       0.72       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     AvoidanceManager        1       0.19       0.19       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                  BehaviorTreeManager        1       0.06       0.06       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                              BlueprintGeneratedClass        4       2.17       2.29       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                            BodySetup       13       9.71      14.46     693.40          693.40            0.00            0.00            0.00            0.00
+                                                                                         BoolProperty     4111     385.41     385.41       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                               BPChangeMaterialComp_C        1       0.23       0.23       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        BPLightBall_C        7       5.17       5.17       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       BrushComponent        1       1.47       1.84       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                               Button        8       8.28       8.47       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                           ButtonSlot        8       0.56       0.56       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         ByteProperty     1297     121.59     121.59       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          CameraActor        1       1.95       1.95       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       CameraAnimInst        8       1.88       1.88       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                      CameraComponent        1       1.92       1.92       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                           CameraModifier_CameraShake        1       0.07       0.07       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                               Canvas        2       1.16       1.16       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          CanvasPanel        2       0.55       0.55       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                      CanvasPanelSlot       20       1.88       1.88       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         CheatManager        1       0.09       0.09       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                             CheckBox        4       7.09       7.19       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                                Class     1593     674.77     774.38       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        ClassProperty      260      24.38      24.38       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                             ComponentDelegateBinding        1       0.19       0.19       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                              Console        1       0.22       0.22       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         CrowdManager        1       0.29       0.29       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          DefaultPawn        1       0.79       0.79       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                 DefaultPhysicsVolume        1       0.76       0.76       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     DelegateFunction      194      25.36      27.22       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     DelegateProperty       67       6.28       6.28       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        DeviceProfile        5      15.02      17.86       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                 DeviceProfileManager        1       0.15       0.22       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     DirectionalLight        1       0.71       0.71       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                            DirectionalLightComponent        1       0.98       0.98       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       DoubleProperty       13       1.12       1.12       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                                 Enum      622     100.22     220.19       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         EnumProperty      251      23.53      23.53       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                      EnvQueryManager        1       0.36       0.36       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                 FloatingPawnMovement        1       0.31       0.31       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        FloatProperty     3600     309.38     309.38       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                                 Font        3       7.82       7.93     128.00            0.00            0.00            0.00            0.00          128.00
+                                                                                             FontFace        7       1.27       1.42     990.25          990.25            0.00            0.00            0.00            0.00
+                                                                                             Function     4024     537.50     584.57       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                           GameEngine        1       6.15       6.37       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         GameInstance        1       0.32       0.34       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         GameModeBase        1       0.81       0.81       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                   GameNetworkManager        1       0.84       0.84       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                  GameplayTagsManager        1       0.48       0.52       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          GameSession        1       0.73       0.73       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        GameStateBase        1       0.75       0.77       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     GameUserSettings        1       0.23       0.23       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                   GameViewportClient        1       0.84       0.84       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                   GCObjectReferencer        1       0.05       0.05       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                                  HUD        1       0.87       0.87       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       InputComponent        3       0.84       0.84       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        Int16Property        3       0.26       0.26       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        Int64Property        5       0.43       0.43       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         Int8Property        4       0.34       0.34       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                    InterfaceProperty       22       2.06       2.06       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                      InterpGroupInst        8       0.44       0.44       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          IntProperty     1693     145.49     145.49       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                   LazyObjectProperty        6       0.56       0.56       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                                Level        1       0.75       0.81       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                    LightMapTexture2D        1       0.21       0.21       5.38            0.00            0.00            0.00            0.00            5.38
+                                                                                   LineBatchComponent        3       4.22       5.62       1.50            1.50            0.00            0.00            0.00            0.00
+                                                                                          LocalPlayer        1       0.27       0.27       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          MainPanel_C        1       0.57       0.62       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                 MapBuildDataRegistry        1     288.34     288.34       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          MapProperty       42       5.58       5.58       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                             Material       21      45.67      46.37       3.45            3.45            0.00            0.00            0.00            0.00
+                                                                 MaterialExpressionFeatureLevelSwitch        9       3.02       3.87       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                MaterialExpressionFontSampleParameter        1       0.27       0.80       0.00            0.00            0.00            0.00            0.00            0.00
+                                                               MaterialExpressionMaterialFunctionCall       12       5.20       5.20       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                      MaterialExpressionQualitySwitch       16       4.62       6.12       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                    MaterialExpressionScalarParameter       25       3.71       6.05       0.00            0.00            0.00            0.00            0.00            0.00
+                                                               MaterialExpressionSpriteTextureSampler        1       0.54       1.07       0.00            0.00            0.00            0.00            0.00            0.00
+                                                             MaterialExpressionTextureObjectParameter        1       0.39       0.48       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                      MaterialExpressionTextureSample        5       2.42       5.08       0.00            0.00            0.00            0.00            0.00            0.00
+                                                           MaterialExpressionTextureSampleParameter2D        7       3.70       7.42       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                    MaterialExpressionVectorParameter       10       2.73       8.05       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     MaterialFunction        7       1.88       2.15       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                             MaterialInstanceConstant       12       5.31       5.31       2.98            2.98            0.00            0.00            0.00            0.00
+                                                                              MaterialInstanceDynamic       14       6.44       8.36       3.27            3.27            0.00            0.00            0.00            0.00
+                                                                        MaterialShaderQualitySettings        1       0.09       0.09       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        MediaPlaylist        1       0.05       0.05       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                                Model        1       1.23       1.23       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                            MulticastDelegateProperty      229      21.47      21.47       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         NameProperty      805      69.18      69.18       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     NavigationSystem        1       0.80       1.09       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                  NavLocalGridManager        1       0.07       0.07       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       ObjectProperty     2618     245.44     245.44       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                            OnlineEngineInterfaceImpl        1       0.23       0.23       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        OnlineSession        1       0.03       0.03       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                              Package      189      48.73      48.73       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          PaperSprite        1       0.23       0.23       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                 PaperTerrainMaterial        1       0.10       0.10       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                 ParticleEventManager        1       0.70       0.70       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     PhysicalMaterial        1       0.09       0.09       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                              PhysicsCollisionHandler        1       0.05       0.05       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                  PlayerCameraManager        1       6.36       6.45       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                     PlayerController        1       1.40       1.52       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          PlayerInput        1       1.79       1.79       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          PlayerState        1       0.84       0.84       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                           PointLight       15      10.66      10.66       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                  PointLightComponent       23      20.84      20.84       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       SceneComponent       11       6.54       6.66       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         ScriptStruct     1138     134.91     157.96       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                             SCS_Node        4       0.82       0.82       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                          SetProperty       25       2.93       2.93       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                        ShaderPlatformQualitySettings        4       0.22       0.22       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                             SimpleConstructionScript        1       0.15       0.15       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                             SkyLight        1       0.71       0.71       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                    SkyLightComponent        1       1.03       1.03       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                    SoftClassProperty       14       1.31       1.31       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                   SoftObjectProperty       24       2.25       2.25       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                           SoundClass        1       0.10       0.10       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                      SphereComponent        9      12.18      16.78       6.16            6.16            0.00            0.00            0.00            0.00
+                                                                                           StaticMesh        4       4.72       6.72    1583.39            0.41            0.00            0.00            0.00         1582.98
+                                                                                      StaticMeshActor        1       0.71       0.71       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                  StaticMeshComponent       10     590.90     595.64       7.14            7.14            0.00            0.00            0.00            0.00
+                                                                                          StrProperty      818      70.30      70.30       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       StructProperty     5098     477.94     477.94       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                           TestBake_C        1       0.71       0.71       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                            TextBlock       16       7.00       7.00       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                         TextProperty      150      12.89      12.89       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                            Texture2D       21       4.27       4.27    3142.05            0.00            0.00            0.00            0.00         3142.05
+                                                                                          TextureCube        1       0.21       0.21      32.25            0.00            0.00            0.00            0.00           32.25
+                                                                                       TouchInterface        1       0.23       0.23       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       UInt16Property       11       0.95       0.95       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       UInt32Property       73       6.27       6.27       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                       UInt64Property        9       0.77       0.77       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                   WeakObjectProperty       28       2.62       2.62       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                        WidgetBlueprintGeneratedClass        1       1.11       1.15       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                           WidgetTree        2       0.09       0.09       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                                World        1       2.16       2.32       0.00            0.00            0.00            0.00            0.00            0.00
+                                                                                        WorldSettings        1       1.20       1.21       0.00            0.00            0.00            0.00            0.00            0.00
+
+30679 Objects (Total: 4.615M / Max: 4.942M / Res: 6.445M | ResDedSys: 1.669M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 4.776M)
+
+
+RHI resource memory (not tracked by our allocator)
+        25041760  -  Render target memory 2D - STAT_RenderTargetMemory2D - STATGROUP_RHI - STATCAT_Advanced
+           57680  -  Uniform buffer memory - STAT_UniformBufferMemory - STATGROUP_RHI - STATCAT_Advanced
+        10186001  -  Texture memory 2D - STAT_TextureMemory2D - STATGROUP_RHI - STATCAT_Advanced
+               8  -  Texture memory 3D - STAT_TextureMemory3D - STATGROUP_RHI - STATCAT_Advanced
+               0  -  Pixel buffer memory - STAT_PixelBufferMemory - STATGROUP_RHI - STATCAT_Advanced
+           33096  -  Texture memory Cube - STAT_TextureMemoryCube - STATGROUP_RHI - STATCAT_Advanced
+         1236722  -  Index buffer memory - STAT_IndexBufferMemory - STATGROUP_RHI - STATCAT_Advanced
+        10203808  -  Vertex buffer memory - STAT_VertexBufferMemory - STATGROUP_RHI - STATCAT_Advanced
+44.593MB total
+
+
+Levels:
+    /Game/Maps/TestBake
+
+
+Listing spawned actors in persistent level:
+Total: 40
+TimeUnseen,TimeAlive,Distance,Class,Name,Owner
+1075.89, 75.89,    3033,AbstractNavData,AbstractNavData-Default,None
+ 49.67, 66.23,     100,BPLightBall_C,BPLightBall_C_0,None
+  0.00, 65.39,     100,BPLightBall_C,BPLightBall_C_1,None
+  0.00, 65.22,     100,BPLightBall_C,BPLightBall_C_2,None
+ 46.72, 65.07,     100,BPLightBall_C,BPLightBall_C_3,None
+ 44.76, 60.81,     100,BPLightBall_C,BPLightBall_C_4,None
+ 38.72, 60.57,     100,BPLightBall_C,BPLightBall_C_5,None
+ 19.12, 60.30,     100,BPLightBall_C,BPLightBall_C_6,None
+1075.89, 75.89,    3033,CameraActor,CameraActor_0,PlayerCameraManager_0
+1075.89, 75.89,       0,DefaultPawn,DefaultPawn_0,PlayerController_0
+1075.89, 75.89,    3033,GameModeBase,GameModeBase_0,None
+1075.89, 75.89,    3033,GameNetworkManager,GameNetworkManager_0,None
+1075.89, 75.89,    3033,GameSession,GameSession_0,None
+1075.89, 75.89,    3033,GameStateBase,GameStateBase_0,None
+1075.89, 75.89,    3033,HUD,HUD_0,PlayerController_0
+1075.89, 75.89,    3033,ParticleEventManager,ParticleEventManager_0,WorldSettings
+1075.89, 75.89,       0,PlayerCameraManager,PlayerCameraManager_0,PlayerController_0
+1075.89, 75.89,    3033,PlayerController,PlayerController_0,None
+1075.89, 75.89,    3033,PlayerState,PlayerState_0,PlayerController_0
+
+
+Particle Dynamic Memory Stats
+Type,Count,MaxCount,Mem(Bytes),MaxMem(Bytes),GTMem(Bytes),GTMemMax(Bytes)
+Total PSysComponents,0,0,0,0,0,0
+Total DynamicEmitters,0,0,0,0,0,0
+Sprite,0,0,0,0,0,0
+Mesh,0,0,0,0,0,0
+Beam,0,0,0,0,0,0
+Ribbon,0,0,0,0,0,0
+AnimTrail,0,0,0,0,0,0
+Untracked,0,0,0,0,0,0
+ParticleData,Total(Bytes),FMath::Max(Bytes)
+GameThread,0,0
+RenderThread,0,0
+Max wasted GT,0
+Largest single GT allocation,0
+Largest single RT allocation,0
+ParticleVertexFactoryPool State
+Type,Count,Mem(Bytes)
+Sprite,0,0
+Sprite,0,0
+Sprite,0,0
+Sprite,0,0
+BeamTrail,0,0
+BeamTrail,0,0
+BeamTrail,0,0
+BeamTrail,0,0
+Mesh,0,0
+Mesh,0,0
+Mesh,0,0
+Mesh,0,0
+TotalMemory Taken in Pool: 0
+ACTIVE,0
+TotalMemory Taken by Actives: 0
+Particle Order Pool Stats
+    0 entries for     0 bytes
+
+
+Config cache memory usage:
+s s s
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+s u u
+
+
+Pooled Render Targets:
+   0.001MB    1x   1           1mip(s) WhiteDummy (B8G8R8A8)  
+   0.001MB    1x   1           1mip(s) BlackDummy (B8G8R8A8)  
+   0.001MB    1x   1           1mip(s) BlackAlphaOneDummy (B8G8R8A8)  
+   0.001MB    1x   1           1mip(s) GreenDummy (B8G8R8A8)  
+   0.001MB    1x   1           1mip(s) DefaultNormal8Bit (B8G8R8A8)  
+   0.062MB  128x 128           1mip(s) PerlinNoiseGradient (B8G8R8A8)  
+   0.001MB   32x  16           1mip(s) SobolSampling (R16_UINT)  
+   0.001MB    1x   1           1mip(s) DepthDummy (DepthStencil)  
+   0.016MB   64x  64           1mip(s) SSAORandomization (R8G8B8A8)  
+   3.934MB 1432x 720           1mip(s) SceneDepthZ (DepthStencil)  
+   8.000MB 2048x1024           1mip(s) WholeSceneShadowmap (ShadowDepth)  
+   4.000MB 1024x1024           1mip(s)  (ShadowDepth)  
+   4.000MB 1024x1024           1mip(s)  (ShadowDepth)  
+20.019MB total, 12.019MB used, 13 render targets
+
+
+Listing all textures.
+Cooked/OnDisk: Width x Height (Size in KB, Authored Bias), Current/InMem: Width x Height (Size in KB), Format, LODGroup, Name, Streaming, Usage Count
+2048x2048 (1365 KB, ?), 2048x2048 (1365 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Game/Mod/XAndT/TPlan/Art_Underground/Textures/Building_Lobby_N.Building_Lobby_N, YES, 2
+2048x2048 (1365 KB, ?), 2048x2048 (1365 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Game/Mod/XAndT/TPlan/Art_Underground/Textures/Building_Lobby_D.Building_Lobby_D, YES, 2
+256x256 (256 KB, ?), 256x256 (256 KB), PF_B8G8R8A8, TEXTUREGROUP_UI, /Engine/MobileResources/HUD/VirtualJoystick_Background.VirtualJoystick_Background, NO, 0
+512x256 (128 KB, ?), 512x256 (128 KB), PF_G8, TEXTUREGROUP_UI, /Engine/EngineFonts/RobotoDistanceField.RobotoDistanceField:RobotoDistanceField_PageA, NO, 0
+64x64 (16 KB, ?), 64x64 (16 KB), PF_B8G8R8A8, TEXTUREGROUP_UI, /Engine/MobileResources/HUD/VirtualJoystick_Thumb.VirtualJoystick_Thumb, NO, 0
+128x128 (5 KB, ?), 128x128 (5 KB), PF_ASTC_8x8, TEXTUREGROUP_Lightmap, /Game/Maps/TestBake_BuiltData.TestBake_BuiltData:LQ_Lightmap_1_1, YES, 3
+32x32 (5 KB, ?), 32x32 (5 KB), PF_B8G8R8A8, TEXTUREGROUP_UI, /Engine/EngineResources/GradientTexture0.GradientTexture0, NO, 0
+128x128 (5 KB, ?), 64x64 (1 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Paper2D/PlaceholderTextures/DummySpriteTexture.DummySpriteTexture, YES, 1
+128x128 (5 KB, ?), 64x64 (1 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/EngineResources/DefaultTexture.DefaultTexture, YES, 0
+64x64 (1 KB, ?), 64x64 (1 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/ArtTools/RenderToTexture/Textures/127grey.127grey, NO, 0
+512x8 (1 KB, ?), 512x8 (1 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/EngineMaterials/MiniFont.MiniFont, NO, 0
+32x32 (0 KB, ?), 32x32 (0 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture, NO, 0
+32x32 (0 KB, ?), 32x32 (0 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/EngineResources/Black.Black, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/EngineMaterials/DefaultDiffuse.DefaultDiffuse, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/EngineMaterials/InvalidLightmapSettings.InvalidLightmapSettings, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_ASTC_4x4, TEXTUREGROUP_WorldNormalMap, /Engine/EngineMaterials/T_Default_Material_Grid_N.T_Default_Material_Grid_N, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/EngineMaterials/T_Default_Material_Grid_M.T_Default_Material_Grid_M, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_ASTC_8x8, TEXTUREGROUP_World, /Engine/EngineMaterials/DefaultWhiteGrid.DefaultWhiteGrid, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_B8G8R8A8, TEXTUREGROUP_World, /Engine/EngineMaterials/PreintegratedSkinBRDF.PreintegratedSkinBRDF, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_B8G8R8A8, TEXTUREGROUP_Bokeh, /Engine/EngineMaterials/DefaultBokeh.DefaultBokeh, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_B8G8R8A8, TEXTUREGROUP_World, /Engine/EngineMaterials/WeightMapPlaceholderTexture.WeightMapPlaceholderTexture, NO, 0
+1x1 (0 KB, ?), 1x1 (0 KB), PF_G8, TEXTUREGROUP_UI, /Engine/EngineMaterials/Good64x64TilingNoiseHighFreq.Good64x64TilingNoiseHighFreq, NO, 0
+Total size: InMem= 3.07 MB  OnDisk= 3.08 MB  Count=22
+Total PF_B8G8R8A8 size: InMem= 0.27 MB  OnDisk= 0.27 MB 
+Total PF_G8 size: InMem= 0.13 MB  OnDisk= 0.13 MB 
+Total PF_ASTC_4x4 size: InMem= 0.00 MB  OnDisk= 0.00 MB 
+Total PF_ASTC_8x8 size: InMem= 2.68 MB  OnDisk= 2.69 MB 
+Total TEXTUREGROUP_World size: InMem= 2.67 MB  OnDisk= 2.68 MB 
+Total TEXTUREGROUP_WorldNormalMap size: InMem= 0.00 MB  OnDisk= 0.00 MB 
+Total TEXTUREGROUP_UI size: InMem= 0.40 MB  OnDisk= 0.40 MB 
+Total TEXTUREGROUP_Lightmap size: InMem= 0.01 MB  OnDisk= 0.01 MB 
+Total TEXTUREGROUP_Bokeh size: InMem= 0.00 MB  OnDisk= 0.00 MB 
+
+
+
+
+ParticleSystems:
+Size,Name,PSysSize,ModuleSize,ComponentSize,ComponentCount,CompResSize,CompTrueResSize
+         0,Total,0,0,0,0,0,0
+
+
+Obj List: class=SoundWave -alphasort
+Objects:
+
+0 Objects (Total: 0.000M / Max: 0.000M / Res: 0.000M | ResDedSys: 0.000M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 0.000M)
+
+
+Obj List: class=SkeletalMesh -alphasort
+Objects:
+
+0 Objects (Total: 0.000M / Max: 0.000M / Res: 0.000M | ResDedSys: 0.000M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 0.000M)
+
+
+Obj List: class=StaticMesh -alphasort
+Objects:
+
+                                                                                                                                      Object      NumKB      MaxKB   ResExcKB  ResExcDedSysKB  ResExcShrSysKB  ResExcDedVidKB  ResExcShrVidKB     ResExcUnkKB
+                                                                                                StaticMesh /Engine/BasicShapes/Sphere.Sphere       1.20       1.70      24.28            0.10            0.00            0.00            0.00           24.18
+                                                                                           StaticMesh /Engine/EngineMeshes/Cylinder.Cylinder       1.10       1.60       9.09            0.10            0.00            0.00            0.00            8.99
+                                                                                               StaticMesh /Engine/EngineMeshes/Sphere.Sphere       1.20       1.70      14.04            0.10            0.00            0.00            0.00           13.93
+                                             StaticMesh /Game/Mod/XAndT/TPlan/Art_Underground/mesh/Tplan_Building_Lobby.Tplan_Building_Lobby       1.23       1.73    1535.98            0.10            0.00            0.00            0.00         1535.88
+
+                                                                                                Class    Count      NumKB      MaxKB   ResExcKB  ResExcDedSysKB  ResExcShrSysKB  ResExcDedVidKB  ResExcShrVidKB     ResExcUnkKB
+                                                                                           StaticMesh        4       4.72       6.72    1583.39            0.41            0.00            0.00            0.00         1582.98
+
+4 Objects (Total: 0.005M / Max: 0.007M / Res: 1.546M | ResDedSys: 0.000M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 1.546M)
+
+
+Obj List: class=Level -alphasort
+Objects:
+
+                                                                                                                                      Object      NumKB      MaxKB   ResExcKB  ResExcDedSysKB  ResExcShrSysKB  ResExcDedVidKB  ResExcShrVidKB     ResExcUnkKB
+                                                                                          Level /Game/Maps/TestBake.TestBake:PersistentLevel       0.75       0.81       0.00            0.00            0.00            0.00            0.00            0.00
+
+                                                                                                Class    Count      NumKB      MaxKB   ResExcKB  ResExcDedSysKB  ResExcShrSysKB  ResExcDedVidKB  ResExcShrVidKB     ResExcUnkKB
+                                                                                                Level        1       0.75       0.81       0.00            0.00            0.00            0.00            0.00            0.00
+
+1 Objects (Total: 0.001M / Max: 0.001M / Res: 0.000M | ResDedSys: 0.000M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 0.000M)
+
+
+Obj List: class=StaticMeshComponent -alphasort
+Objects:
+
+                                                                                                                                      Object      NumKB      MaxKB   ResExcKB  ResExcDedSysKB  ResExcShrSysKB  ResExcDedVidKB  ResExcShrVidKB     ResExcUnkKB
+                                                      StaticMeshComponent /Game/Blueprints/BPLightBall.BPLightBall_C:StaticMesh_GEN_VARIABLE       1.58       2.05       0.00            0.00            0.00            0.00            0.00            0.00
+                                                 StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.BPLightBall_C_0.StaticMesh       1.58       2.05       0.59            0.59            0.00            0.00            0.00            0.00
+                                                 StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.BPLightBall_C_1.StaticMesh       1.58       2.05       0.59            0.59            0.00            0.00            0.00            0.00
+                                                 StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.BPLightBall_C_2.StaticMesh       1.58       2.05       0.59            0.59            0.00            0.00            0.00            0.00
+                                                 StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.BPLightBall_C_3.StaticMesh       1.58       2.05       0.59            0.59            0.00            0.00            0.00            0.00
+                                                 StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.BPLightBall_C_4.StaticMesh       1.58       2.05       0.59            0.59            0.00            0.00            0.00            0.00
+                                                 StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.BPLightBall_C_5.StaticMesh       1.58       2.05       0.59            0.59            0.00            0.00            0.00            0.00
+                                                 StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.BPLightBall_C_6.StaticMesh       1.58       2.05       0.59            0.59            0.00            0.00            0.00            0.00
+                                               StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.DefaultPawn_0.MeshComponent0       1.56       2.05       1.67            1.67            0.00            0.00            0.00            0.00
+                                StaticMeshComponent /Game/Maps/TestBake.TestBake:PersistentLevel.Tplan_Building_Lobby_3.StaticMeshComponent0     576.68     577.18       1.32            1.32            0.00            0.00            0.00            0.00
+
+                                                                                                Class    Count      NumKB      MaxKB   ResExcKB  ResExcDedSysKB  ResExcShrSysKB  ResExcDedVidKB  ResExcShrVidKB     ResExcUnkKB
+                                                                                  StaticMeshComponent       10     590.90     595.64       7.14            7.14            0.00            0.00            0.00            0.00
+
+10 Objects (Total: 0.577M / Max: 0.582M / Res: 0.007M | ResDedSys: 0.007M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 0.000M)
+
+
+Obj List: class=AnimSequence -alphasort
+Objects:
+
+0 Objects (Total: 0.000M / Max: 0.000M / Res: 0.000M | ResDedSys: 0.000M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 0.000M)
+
+
+Obj List: class=Image -alphasort
+Objects:
+
+0 Objects (Total: 0.000M / Max: 0.000M / Res: 0.000M | ResDedSys: 0.000M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 0.000M)
+
+
+Obj List: class=UAEDataTable -alphasort
+Objects:
+
+0 Objects (Total: 0.000M / Max: 0.000M / Res: 0.000M | ResDedSys: 0.000M / ResShrSys: 0.000M / ResDedVid: 0.000M / ResShrVid: 0.000M / ResUnknown: 0.000M)
+
+
