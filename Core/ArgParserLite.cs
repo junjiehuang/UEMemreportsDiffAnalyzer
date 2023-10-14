@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    class ArgParserLite
+    public class ArgParserLite
     {
         string[] m_Args;
 

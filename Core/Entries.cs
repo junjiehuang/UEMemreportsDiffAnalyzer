@@ -1063,29 +1063,25 @@ namespace MemReportParser
             SetGroupNeedCalcTotal("Render Target Pools");
         }
 
-        public void AnalyzeAndOutputResults(ref List<string> FileNameLst, ref List<string> FileFullPathLst, string outputCsvFilePath)
+        public void DataRegulate(ref List<string> FileNameLst)
         {
-            GenDataFromFiles(ref FileNameLst, ref FileFullPathLst);
-
             ///////////////////////////////////////////////////////////////////////
-            /// 数据校对并计算差异
-            List<GroupEntry> SortGroups = new List<GroupEntry>();
+            /// 数据校对并计算差异            
             foreach (var itAll in AllDatas)
             {
                 GroupEntry ge = itAll.Value;
-                SortGroups.Add(ge);
                 Dictionary<string, RowEntry> rows = itAll.Value.RowDatas;
                 RowEntry TotalRow = ge.NeedCalcTotal ? new RowEntry() : null;
-                if(TotalRow != null)
+                if (TotalRow != null)
                 {
                     TotalRow.RowName = "[TotalStatistics]";
                 }
                 foreach (var itRow in rows)
                 {
                     RowEntry row = itRow.Value;
-                    if(TotalRow!=null && TotalRow.ColumeEntries.Count == 0)
+                    if (TotalRow != null && TotalRow.ColumeEntries.Count == 0)
                     {
-                        for(int i = 0; i < row.ColumeEntries.Count; ++i)
+                        for (int i = 0; i < row.ColumeEntries.Count; ++i)
                         {
                             ColumeEntry srcCE = row.ColumeEntries[i];
                             ColumeEntry tarCE = new ColumeEntry();
@@ -1095,8 +1091,7 @@ namespace MemReportParser
                         }
                     }
 
-                    //foreach (var col in row.ColumeEntries)
-                    for(int colIndex = 0; colIndex < row.ColumeEntries.Count; ++colIndex)
+                    for (int colIndex = 0; colIndex < row.ColumeEntries.Count; ++colIndex)
                     {
                         var srcCol = row.ColumeEntries[colIndex];
                         if (srcCol.Entries.Count > 0)
@@ -1117,11 +1112,11 @@ namespace MemReportParser
                             }
                             srcCol.CalcDiff();
 
-                            if(TotalRow!=null)
+                            if (TotalRow != null)
                             {
                                 var tarCol = TotalRow.ColumeEntries[colIndex];
                                 bool hasInit = tarCol.Entries.Count > 0;
-                                for(int i = 0; i < srcCol.Entries.Count; ++i)
+                                for (int i = 0; i < srcCol.Entries.Count; ++i)
                                 {
                                     Entry srcEntry = srcCol.Entries[i];
                                     Entry tarEntry = null;
@@ -1160,7 +1155,7 @@ namespace MemReportParser
                             {
                                 var tarCol = TotalRow.ColumeEntries[colIndex];
                                 bool hasInit = tarCol.ExtraInfos.Count > 0;
-                                if(hasInit == false)
+                                if (hasInit == false)
                                 {
                                     for (int i = 0; i < srcCol.ExtraInfos.Count; ++i)
                                     {
@@ -1173,14 +1168,28 @@ namespace MemReportParser
                         }
                     }
                 }
-                if(TotalRow!=null)
+                if (TotalRow != null)
                 {
-                    for(int i = 0; i < TotalRow.ColumeEntries.Count; ++i)
+                    for (int i = 0; i < TotalRow.ColumeEntries.Count; ++i)
                     {
                         TotalRow.ColumeEntries[i].CalcDiff();
                     }
                     ge.RowDatas.Add(TotalRow.RowName, TotalRow);
                 }
+            }
+        }
+
+        public void AnalyzeAndOutputResults(ref List<string> FileNameLst, ref List<string> FileFullPathLst, string outputCsvFilePath)
+        {
+            GenDataFromFiles(ref FileNameLst, ref FileFullPathLst);
+            DataRegulate(ref FileNameLst);
+
+            ///////////////////////////////////////////////////////////////////////
+            /// 对数据组进行排序，方便在报表里按顺序输出
+            List<GroupEntry> SortGroups = new List<GroupEntry>();
+            foreach (var itAll in AllDatas)
+            {
+                SortGroups.Add(itAll.Value);
             }
             SortGroups.Sort((a, b) =>
             {
@@ -1202,12 +1211,10 @@ namespace MemReportParser
 
                 Workbook workbook = new Workbook();
                 workbook.Worksheets.Clear();
-                //IWorkbook workbook = new HSSFWorkbook();
 
                 foreach (var group in SortGroups)
                 {
                     string GroupName = group.GroupName;
-                    //ISheet worksheet = workbook.CreateSheet(GroupName);
                     Worksheet workSheet = workbook.CreateEmptySheet();
                     workSheet.Name = GroupName;
 
@@ -1231,52 +1238,33 @@ namespace MemReportParser
                     int rowCount = 0;
                     int colCount = 0;
                     {
-                        //IRow newRow = worksheet.CreateRow(rowCount++);
-                        //newRow.CreateCell(colCount++).SetCellValue("Type");
-
                         BuiltInStyles HeadStyle = BuiltInStyles.Good;
                         rowCount = 1;
                         string ColName = ColNames[colCount++] + (rowCount).ToString();
                         workSheet.Range[ColName].Value = "Type";
                         workSheet.Range[ColName].BuiltInStyle = HeadStyle;
-                        //IBorders borders = workSheet.Range[ColName].Borders;
-                        //borders.LineStyle = LineStyleType.Thick;
-                        //borders.Color = System.Drawing.Color.AliceBlue;
 
                         foreach (var ce in firstRow.ColumeEntries)
                         {
                             foreach (var ei in ce.ExtraInfos)
                             {
-                                //newRow.CreateCell(colCount++).SetCellValue(string.Format("{0}_[{1}]", ce.ColumeName, ei.MemReportFileName));
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].Value = string.Format("{0}_[{1}]", ce.ColumeName, ei.MemReportFileName);
                                 workSheet.Range[ColName].BuiltInStyle = HeadStyle;
-                                //borders = workSheet.Range[ColName].Borders;
-                                //borders.LineStyle = LineStyleType.Thick;
-                                //borders.Color = System.Drawing.Color.AliceBlue;
                                 
                             }
                             foreach (var e in ce.Entries)
                             {
-                                //newRow.CreateCell(colCount++).SetCellValue(string.Format("{0}[{1}]_[{2}]", ce.ColumeName, ce.ColumeTag, e.MemReportFileName));
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].Value = string.Format("{0}[{1}]_[{2}]", ce.ColumeName, ce.ColumeTag, e.MemReportFileName);
                                 workSheet.Range[ColName].BuiltInStyle = HeadStyle;
-                                //borders = workSheet.Range[ColName].Borders;
-                                //borders.LineStyle = LineStyleType.Thick;
-                                //borders.Color = System.Drawing.Color.AliceBlue;
                                 
                             }
                             if (ce.Entries.Count > 0)
                             {
-                                //newRow.CreateCell(colCount++).SetCellValue(string.Format("Diff_{0}[{1}]", ce.ColumeName, ce.ColumeTag));
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].Value = string.Format("Diff_{0}[{1}]", ce.ColumeName, ce.ColumeTag);
-                                workSheet.Range[ColName].BuiltInStyle = HeadStyle;
-                                //borders = workSheet.Range[ColName].Borders;
-                                //borders.LineStyle = LineStyleType.Thick;
-                                //borders.Color = System.Drawing.Color.AliceBlue;
-                                
+                                workSheet.Range[ColName].BuiltInStyle = HeadStyle;                                
                             }
                         }
                         ++rowCount;
@@ -1286,9 +1274,6 @@ namespace MemReportParser
                     foreach (var row in rowLst)
                     {
                         colCount = 0;
-                        //IRow newRow = worksheet.CreateRow(rowCount++);
-                        //newRow.CreateCell(colCount++).SetCellValue(row.RowName);
-
                         string ColName = ColNames[colCount++] + (rowCount).ToString();
                         workSheet.Range[ColName].Value = row.RowName;
 
@@ -1296,19 +1281,16 @@ namespace MemReportParser
                         {
                             foreach (var ei in col.ExtraInfos)
                             {
-                                //newRow.CreateCell(colCount++).SetCellValue(ei.ColumeValue);
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].Value = ei.ColumeValue;
                             }
                             foreach (var e in col.Entries)
                             {
-                                //newRow.CreateCell(colCount++).SetCellValue(((float)Math.Round(e.Value, 3)));
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].NumberValue = (float)Math.Round(e.Value, 3);
                             }
                             if (col.Entries.Count > 0)
                             {
-                                //newRow.CreateCell(colCount++).SetCellValue(((float)Math.Round(col.Diff, 3)));
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].NumberValue = (float)Math.Round(col.Diff, 3);
                             }
@@ -1320,15 +1302,10 @@ namespace MemReportParser
 
                 // 将 Excel 文件保存到磁盘
                 workbook.SaveToFile(outputCsvFilePath, ExcelVersion.Version97to2003);
-                //using (FileStream fs = new FileStream(outputCsvFilePath, FileMode.Create, FileAccess.Write))
-                //{
-                //    workbook.Write(fs);                    
-                //    fs.Flush();
-                //    fs.Close();
-                //    fs.Dispose();
-                //}
                 // 释放资源
                 workbook.Dispose();
+
+                Console.WriteLine("Analyze Completed! Result File : " + outputCsvFilePath);
             }
             else
             {
@@ -1411,30 +1388,27 @@ namespace MemReportParser
                 sw.Close();
                 fs.Close();
             }
-            Console.WriteLine("Analyze Completed!");
+            Console.WriteLine("Analyze Completed! Result File : " + outputCsvFilePath);
         }
 
     }
 
     public class Analyzer
     {
-        public static string DoAnalyze(string[] args)
+        public static void ParseArgs(string[] args, ArgParserLite argParser, out List<string> FileNameLst, out List<string> FileFullPathLst, out string diffCSVPath)
         {
             for (int i = 0; i < args.Length; ++i)
             {
                 Console.WriteLine(args[i]);
             }
-            ArgParserLite argParser = new ArgParserLite(args);
-            DataManager dataMgr = new DataManager();
-
-            List<string> FileNameLst = new List<string>();
-            List<string> FileFullPathLst = new List<string>();
+            FileNameLst = new List<string>();
+            FileFullPathLst = new List<string>();
             // 解析第一个memreport文件
             string memReportPath1 = argParser.GetValue("-1f", null);
             // 解析第二个memreport文件
             string memReportPath2 = argParser.GetValue("-2f", null);
             // 解析差量分析的结果文件
-            string diffCSVPath = argParser.GetValue("-o", null);
+            diffCSVPath = argParser.GetValue("-o", null);
             // 差量模式
             string pattern = argParser.GetValue("-p", null);
             if (string.IsNullOrEmpty(memReportPath1) == false)
@@ -1475,6 +1449,15 @@ namespace MemReportParser
                     diffCSVPath = System.IO.Directory.GetCurrentDirectory() + string.Format("/Diff_{0}.{1}", FileNameLst[0], pattern);
                 Console.WriteLine(string.Format("Compare Result File [{0}]: ", diffCSVPath));
             }
+        }
+
+        public static string DoAnalyze(string[] args)
+        {
+            ArgParserLite argParser = new ArgParserLite(args);
+            List<string> FileNameLst;
+            List<string> FileFullPathLst;
+            string diffCSVPath;
+            ParseArgs(args, argParser, out FileNameLst, out FileFullPathLst, out diffCSVPath);
 
             if (FileNameLst.Count == 0 || argParser.GetOption("-h"))
             {
@@ -1498,6 +1481,7 @@ namespace MemReportParser
                 return null;
             }
 
+            DataManager dataMgr = new DataManager();
             // 解析并输出结果
             dataMgr.AnalyzeAndOutputResults(ref FileNameLst, ref FileFullPathLst, diffCSVPath);
             return diffCSVPath;
