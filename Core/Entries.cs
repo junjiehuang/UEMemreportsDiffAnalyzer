@@ -15,6 +15,12 @@ using NPOI.XSSF.Streaming.Values;
 using SixLabors.Fonts;
 using ICSharpCode.SharpZipLib.Tar;
 using Core;
+using System.Diagnostics.Tracing;
+using static NPOI.HSSF.Util.HSSFColor;
+using System.Windows.Input;
+using NPOI.HPSF;
+using System.Reflection;
+using Org.BouncyCastle.Bcpg;
 
 namespace MemReportParser
 {
@@ -29,12 +35,19 @@ namespace MemReportParser
         POOL_STATS = 400,
         MEMORY_STATS = 500,
         RHI_STATS = 600,
+        RHI_RENDER_TARGET2D_INFO = 650,
+        RHI_RENDER_TARGET3D_INFO = 651,
+        RHI_RENDER_TARGETCUBE_INFO = 652,
+        RHI_TEXTURE2D_INFO = 653,
+        RHI_TEXTURE3D_INFO = 654,
+        RHI_TEXTURECUBE_INFO = 655,
         POOLED_RENDER_TARGETS = 700,
         TEXTURE_LIST = 800,
         OBJECT_CLASS_LIST = 900,
         OBJECT_LIST = 1000,
         PERSISTENT_LEVEL_SPAWNED_ACTORS = 1100,
-        LUA_MEMORY = 1200,        
+        LUA_MEMORY = 1200,   
+        WWISE_MEMORY = 1300,
     }
 
     // 一个数据单元
@@ -171,6 +184,21 @@ namespace MemReportParser
         public int GroupID = 0;
         public Dictionary<string, RowEntry> RowDatas = new Dictionary<string, RowEntry>();
         public bool NeedCalcTotal = false;
+
+        public RowEntry GetRowEntry(string rowName)
+        {
+            RowEntry row = null;
+            RowDatas.TryGetValue(rowName, out row);
+            return row;
+        }
+    }
+
+    public class EntryTreeNode
+    {
+        public string NodeDesc = "";
+        public float MemSizeMB = 0.0f;
+        public GroupEntry GroupData = null;
+        public List<EntryTreeNode> SubNodes = new List<EntryTreeNode>();
     }
 
     // 管理所有组的对比数据
@@ -179,6 +207,8 @@ namespace MemReportParser
         public static bool EXPORT_AS_MULTISHEETS_EXCEL = true;
 
         public Dictionary<string, GroupEntry> AllDatas = new Dictionary<string, GroupEntry>();
+
+        public List<EntryTreeNode> DataTree = new List<EntryTreeNode>();
 
         public GroupEntry GetGroupEntry(string key)
         {
@@ -227,6 +257,23 @@ namespace MemReportParser
         static string[] SplitAndTrim(string line, char splitChar)
         {
             string[] words = line.Split(splitChar);
+            List<string> trimmedWords = new List<string>();
+            foreach (string word in words)
+            {
+                if (string.IsNullOrEmpty(word) || string.IsNullOrWhiteSpace(word))
+                {
+                }
+                else
+                {
+                    trimmedWords.Add(word.Trim());
+                }
+            }
+            return trimmedWords.ToArray();
+        }
+
+        static string[] SplitAndTrim(string line, string splitStr)
+        {
+            string[] words = line.Split(splitStr);
             List<string> trimmedWords = new List<string>();
             foreach (string word in words)
             {
@@ -406,13 +453,41 @@ namespace MemReportParser
                     {
                         state = ParseState.MALLOC_BINNED2_MEM;
                     }
-                    else if(line.Contains("Lua memory usage"))
+                    else if (line.Contains("Lua memory usage"))
                     {
                         state = ParseState.LUA_MEMORY;
                     }
-                    else if(line.Contains("Android meminfo"))
+                    else if (line.Contains("Android meminfo"))
                     {
                         state = ParseState.BRIEF_ANDROID_MEMINFO;
+                    }
+                    else if (line.Contains("RHIRenderTarget2D Count="))
+                    {
+                        state = ParseState.RHI_RENDER_TARGET2D_INFO;
+                    }
+                    else if (line.Contains("RHIRenderTarget3D Count="))
+                    {
+                        state = ParseState.RHI_RENDER_TARGET3D_INFO;
+                    }
+                    else if (line.Contains("RHIRenderTargetCube Count="))
+                    {
+                        state = ParseState.RHI_RENDER_TARGETCUBE_INFO;
+                    }
+                    else if (line.Contains("RHITexture2D Count="))
+                    {
+                        state = ParseState.RHI_TEXTURE2D_INFO;
+                    }
+                    else if (line.Contains("RHITexture3D Count="))
+                    {
+                        state = ParseState.RHI_TEXTURE3D_INFO;
+                    }
+                    else if (line.Contains("RHITextureCube Count="))
+                    {
+                        state = ParseState.RHI_TEXTURECUBE_INFO;
+                    }
+                    else if (line.Contains("WWISE "))
+                    {
+                        state = ParseState.WWISE_MEMORY;
                     }
 
                     switch (state)
@@ -425,18 +500,14 @@ namespace MemReportParser
                                 // Total size: InMem= 376.37 MB  OnDisk= 482.68 MB  Count=295, CountApplicableToMin=58
                                 if (line.Contains("Total size: InMem"))
                                 {
-                                    float inMemSize = 0;
-                                    float onDiskSize = 0;
-                                    if (ParseInMemOnDisk(line, out inMemSize, out onDiskSize))
-                                    {
-                                        //string key = "Total";
-                                        //GetRowEntry(((int)ParseState.TEXTURE_LIST + 1), "TextureTotal In Mem", key).Add("InMemSize", fileName, inMemSize, "MB");
-                                        //GetRowEntry(((int)ParseState.TEXTURE_LIST + 2), "TextureTotal On Disk", key).Add("OnDiskSize", fileName, onDiskSize, "MB");
-                                        GetRowEntry(((int)ParseState.TEXTURE_LIST + 1), "Texture Total", "In Memory").Add("Size", fileName, inMemSize, "MB");
-                                        GetRowEntry(((int)ParseState.TEXTURE_LIST + 1), "Texture Total", "On Disk").Add("Size", fileName, onDiskSize, "MB");
-
-                                        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "Texture Total").Add("Size", fileName, inMemSize, "MB");
-                                    }
+                                    //float inMemSize = 0;
+                                    //float onDiskSize = 0;
+                                    //if (ParseInMemOnDisk(line, out inMemSize, out onDiskSize))
+                                    //{
+                                    //    GetRowEntry(((int)ParseState.TEXTURE_LIST + 1), "Texture Total", "In Memory").Add("Size", fileName, inMemSize, "MB");
+                                    //    GetRowEntry(((int)ParseState.TEXTURE_LIST + 1), "Texture Total", "On Disk").Add("Size", fileName, onDiskSize, "MB");
+                                    //    GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "Texture Total").Add("Size", fileName, inMemSize, "MB");
+                                    //}
                                 }
                                 else if (line.Contains("Total PF_") || line.Contains("Total TEXTUREGROUP_"))
                                 {
@@ -465,12 +536,12 @@ namespace MemReportParser
                                             string key = line.Substring(0, e).Replace("Total ", "").Trim();
                                             if (line.Contains("Total TEXTUREGROUP_"))
                                             {
-                                                GetRowEntry(((int)ParseState.TEXTURE_LIST + 3), "TextureGroup In Mem", key).Add("InMemSize", fileName, inMemSize, "MB");
+                                                GetRowEntry(((int)ParseState.TEXTURE_LIST + 3), "TextureGroupInMem", key).Add("Size", fileName, inMemSize, "MB");
                                                 //GetRowEntry(((int)ParseState.TEXTURE_LIST + 4), "TextureGroup On Disk", key).Add("OnDiskSize", fileName, onDiskSize, "MB");
                                             }
                                             if (line.Contains("Total PF_"))
                                             {
-                                                GetRowEntry(((int)ParseState.TEXTURE_LIST + 5), "TextureFormat In Mem", key).Add("InMemSize", fileName, inMemSize, "MB");
+                                                GetRowEntry(((int)ParseState.TEXTURE_LIST + 5), "TextureFormatInMem", key).Add("Size", fileName, inMemSize, "MB");
                                                 //GetRowEntry(((int)ParseState.TEXTURE_LIST + 6), "TextureFormat On Disk", key).Add("OnDiskSize", fileName, onDiskSize, "MB");
                                             }
                                         }
@@ -509,12 +580,12 @@ namespace MemReportParser
                                                 string sizeKB = inMemSize[1].Replace("(", "").Trim();
                                                 if (long.TryParse(sizeKB, out inMemSizeKB))
                                                 {
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("Width x Height", fileName, inMemSize[0]);
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("LODGroup", fileName, words[4]);
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("Streaming", fileName, Streaming.ToString());
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("Uncompressed", fileName, Uncompressed.ToString());
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).Add("NumMips", fileName, int.Parse(words[10]), "");
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).Add("SizeInMem", fileName, inMemSizeKB, "KB");
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Width x Height", fileName, inMemSize[0]);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("LODGroup", fileName, words[4]);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Streaming", fileName, Streaming.ToString());
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Uncompressed", fileName, Uncompressed.ToString());
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).Add("NumMips", fileName, int.Parse(words[10]), "");
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).Add("Size", fileName, inMemSizeKB, "KB");
                                                     //AddEntry(GetStatDict(allStats, "Texture In Mem"), fileName, key, inMemSizeKB, "KB");
                                                 }
                                             }
@@ -547,10 +618,10 @@ namespace MemReportParser
                                                         string sizeKB = inMemSize[1].Replace("(", "").Trim();
                                                         if (long.TryParse(sizeKB, out inMemSizeKB))
                                                         {
-                                                            GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("Width x Height", fileName, inMemSize[0]);
-                                                            GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("LODGroup", fileName, words[4]);
-                                                            GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("Streaming", fileName, Streaming.ToString());
-                                                            GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).Add("SizeInMem", fileName, inMemSizeKB, "KB");
+                                                            GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Width x Height", fileName, inMemSize[0]);
+                                                            GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("LODGroup", fileName, words[4]);
+                                                            GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Streaming", fileName, Streaming.ToString());
+                                                            GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).Add("Size", fileName, inMemSizeKB, "KB");
                                                         }
                                                     }
                                                 }
@@ -591,11 +662,43 @@ namespace MemReportParser
                                                 string sizeKB = inMemSize[1].Replace("(", "").Trim();
                                                 if (long.TryParse(sizeKB, out inMemSizeKB))
                                                 {
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("Width x Height", fileName, inMemSize[0]);
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("LODGroup", fileName, words[4]);
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).AddExtraColume("Streaming", fileName, Streaming.ToString());
-                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "Texture In Mem", key).Add("SizeInMem", fileName, inMemSizeKB, "KB");
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Width x Height", fileName, inMemSize[0]);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("LODGroup", fileName, words[4]);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Streaming", fileName, Streaming.ToString());
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).Add("Size", fileName, inMemSizeKB, "KB");
                                                     //AddEntry(GetStatDict(allStats, "Texture In Mem"), fileName, key, inMemSizeKB, "KB");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // Modify in klbq
+                                    // Cooked/OnDisk: Width x Height (Size in KB, Authored Bias), Current/InMem: Width x Height (Size in KB), Format, LODGroup, Name, Streaming, Usage Count, VT, NumMips, Uncompressed
+                                    else if(words.Length == 11)
+                                    {
+                                        string Streaming = words[6];
+                                        int UsageCount = 0;
+                                        string VT = words[8];
+                                        int NumMips = 0;
+                                        string Uncompressed = words[10];
+                                        if (int.TryParse(words[7], out UsageCount)
+                                            && int.TryParse(words[9], out NumMips))
+                                        {
+                                            long inMemSizeKB = 0;
+                                            string[] inMemSize = SplitAndTrim(words[2], ' ');
+                                            if (inMemSize.Length == 3)
+                                            {
+                                                string key = words[5];//string.Format("[{0}]_[{1}_[{2}]", inMemSize[0], words[4], words[5]);
+                                                string sizeKB = inMemSize[1].Replace("(", "").Trim();
+                                                if (long.TryParse(sizeKB, out inMemSizeKB))
+                                                {
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Width x Height", fileName, inMemSize[0]);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("LODGroup", fileName, words[4]);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Streaming", fileName, Streaming);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("UsageCount", fileName, UsageCount.ToString());
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("VirtualTexture", fileName, VT);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("NumMips", fileName, NumMips.ToString());
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).AddExtraColume("Uncompressed", fileName, Uncompressed);
+                                                    GetRowEntry(((int)ParseState.TEXTURE_LIST + 7), "TextureInMem", key).Add("Size", fileName, inMemSizeKB, "KB");
                                                 }
                                             }
                                         }
@@ -667,39 +770,6 @@ namespace MemReportParser
                             break;
 
                         case ParseState.BINNED_ALLOCATOR_STATS:
-                            {
-                                if (line.Contains("Current Memory"))
-                                {
-                                    //Current Memory 1553.98 MB used, plus 98.58 MB waste
-                                    ParseBinnedMemory2(line, "Current Memory ", "Used", "Waste", fileName);
-                                }
-                                else if (line.Contains("Peak Memory"))
-                                {
-                                    //Peak Memory 1556.45 MB used, plus 99.49 MB waste
-                                    ParseBinnedMemory2(line, "Peak Memory ", "Used", "Waste", fileName);
-                                }
-                                else if (line.Contains("Current OS Memory"))
-                                {
-                                    //Current OS Memory 1652.56 MB, peak 1655.94 MB
-                                    ParseBinnedMemory2(line, "Current OS Memory ", "Used", "Peak", fileName);
-                                }
-                                else if (line.Contains("Current Waste"))
-                                {
-                                    //Current Waste 35.56 MB, peak 35.74 MB
-                                    ParseBinnedMemory2(line, "Current Waste ", "Waste", "Peak", fileName);
-                                }
-                                else if (line.Contains("Current Used"))
-                                {
-                                    //Current Used 1553.98 MB, peak 1556.45 MB
-                                    ParseBinnedMemory2(line, "Current Used ", "Used", "Peak", fileName);
-                                }
-                                else if (line.Contains("Current Slack"))
-                                {
-                                    //Current Slack 63.03 MB
-                                    ParseBinnedMemory2(line, "Current Slack ", "Used", "Peak", fileName);
-                                }
-                            }
-                            break;
 
                         case ParseState.OBJECT_CLASS_LIST:
                             {
@@ -717,9 +787,11 @@ namespace MemReportParser
                                             GetRowEntry((int)ParseState.OBJECT_CLASS_LIST, strGroupName, key).Add("Count", fileName, count, "Count");
                                         }
 
+                                        int finds = 0;
                                         float NumKB;
                                         if (float.TryParse(words[2], out NumKB))
                                         {
+                                            ++finds;
                                             string key = words[0];
                                             GetRowEntry((int)ParseState.OBJECT_CLASS_LIST, strGroupName, key).Add("NumKB", fileName, NumKB, "KB");
                                         }
@@ -727,8 +799,16 @@ namespace MemReportParser
                                         float ResExcKB;
                                         if (float.TryParse(words[4], out ResExcKB))
                                         {
+                                            ++finds;
                                             string key = words[0];
                                             GetRowEntry((int)ParseState.OBJECT_CLASS_LIST, strGroupName, key).Add("ResExcKB", fileName, ResExcKB, "KB");
+                                        }
+
+                                        if(finds == 2)
+                                        {
+                                            string key = words[0];
+                                            float accumMB = (NumKB + ResExcKB) / 1024f;
+                                            GetRowEntry((int)ParseState.OBJECT_CLASS_LIST, strGroupName, key).Add("Compound", fileName, accumMB, "MB");
                                         }
 
                                         SetGroupNeedCalcTotal(strGroupName);
@@ -771,7 +851,8 @@ namespace MemReportParser
                                         float objMB;
                                         if(float.TryParse(strObjMB, out objMB))
                                         {
-                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "UObject Memory").Add("Size", fileName, objMB, "MB");
+                                            string key = "Group [UObject] : UObjects Memory";
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, objMB, "MB");
                                         }
 
                                         words = segs[2].Split(' ');
@@ -779,7 +860,8 @@ namespace MemReportParser
                                         float resMB;
                                         if (float.TryParse(strResMB, out resMB))
                                         {
-                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "UObject Reference Res Memory").Add("Size", fileName, resMB, "MB");
+                                            string key = "Group [UObject] : UObject Reference Res Memory";
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, resMB, "MB");
                                         }
                                     }
                                 }
@@ -805,13 +887,31 @@ namespace MemReportParser
                                         long Count;
                                         if (long.TryParse(words[1], out Count) == false)
                                         {
+											int finds = 0;
                                             float numKB;
                                             if (float.TryParse(words[2], out numKB))
                                             {
+												++finds;
                                                 string key = words[1];
                                                 GetRowEntry(GroupID, srGroupName, key).Add("NumKB", fileName, numKB, "KB");
                                                 SetGroupNeedCalcTotal(srGroupName);
                                             }
+											
+											float resKB;
+											if (float.TryParse(words[4], out resKB))
+											{
+												++finds;
+												string key = words[1];
+												GetRowEntry(GroupID, srGroupName, key).Add("ResKB", fileName, resKB, "KB");
+                                                SetGroupNeedCalcTotal(srGroupName);
+											}
+											
+											if (finds == 2)
+											{
+												string key = words[1];
+												GetRowEntry(GroupID, srGroupName, key).Add("Compound", fileName, (resKB+numKB)/1024.0f, "MB");
+                                                SetGroupNeedCalcTotal(srGroupName);
+											}
                                         }
                                     }
                                     // UE5:
@@ -825,13 +925,31 @@ namespace MemReportParser
                                             // Object      NumKB      MaxKB   ResExcKB  ResExcDedSysKB  ResExcDedVidKB     ResExcUnkKB
                                             //SkeletalMesh /Game/Resources/PolygonTown/Meshes/Characters/SK_Character_Son_01.SK_Character_Son_01     897.23     897.41     255.16           20.66            0.00          234.51
                                             {
+												int finds = 0;
                                                 float numKB;
                                                 if (float.TryParse(words[2], out numKB))
                                                 {
+													++finds;
                                                     string key = words[1];
                                                     GetRowEntry(GroupID, srGroupName, key).Add("NumKB", fileName, numKB, "KB");
                                                     SetGroupNeedCalcTotal(srGroupName);
-                                                }
+                                                }												
+												
+												float resKB;
+												if (float.TryParse(words[4], out resKB))
+												{
+													++finds;
+													string key = words[1];
+													GetRowEntry(GroupID, srGroupName, key).Add("ResKB", fileName, resKB, "KB");
+													SetGroupNeedCalcTotal(srGroupName);
+												}
+												
+												if (finds == 2)
+												{
+													string key = words[1];
+													GetRowEntry(GroupID, srGroupName, key).Add("Compound", fileName, (resKB+numKB)/1024.0f, "MB");
+													SetGroupNeedCalcTotal(srGroupName);
+												}
                                             }
                                         }
                                     }
@@ -860,65 +978,160 @@ namespace MemReportParser
                                         GetRowEntry((int)ParseState.RHI_STATS, "RHI Memory", key).Add("SizeMem", fileName, value, "MB");
                                     }
                                 }
-                                else if(line.Contains("total"))
-                                {
-                                    words = SplitAndTrim(line, ' ');
-                                    if(words.Length == 2)
-                                    {
-                                        string strmb = words[0].Replace("MB", "");
-                                        float mb;
-                                        if(float.TryParse(strmb, out mb))
-                                        {
-                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "RHI Memory").Add("Size", fileName, mb, "MB");
-                                        }
-                                    }
-                                }
+                                //else if(line.Contains("total"))
+                                //{
+                                //    words = SplitAndTrim(line, ' ');
+                                //    if(words.Length == 2)
+                                //    {
+                                //        string strmb = words[0].Replace("MB", "");
+                                //        float mb;
+                                //        if(float.TryParse(strmb, out mb))
+                                //        {
+                                //            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "RHI Memory").Add("Size", fileName, mb, "MB");
+                                //        }
+                                //    }
+                                //}
                                 
                             }
                             break;
 
                         case ParseState.MEMORY_STATS:
                             {
-                                string[] words = SplitAndTrim(line, '-');
-                                if (words.Length >= 3)
+                                if(line.Contains("-"))
                                 {
-                                    string key = words[2];
-                                    float value;
-                                    bool hasMB = words[0].Contains("MB");
-                                    if (hasMB)
-                                        words[0] = words[0].Replace("MB", "");
-                                    if (float.TryParse(words[0], out value))
+                                    string[] words = SplitAndTrim(line, " - ");
+                                    if (words.Length >= 3)
                                     {
-                                        if (hasMB == false)
-                                            value /= (1024 * 1024);
-                                        GetRowEntry((int)ParseState.MEMORY_STATS, "Stat Memory", key).Add("SizeMem", fileName, value, "MB");
-                                    }
+                                        string key = words[2];
+                                        string parKey = words[3];
+                                        float value;
+                                        bool hasMB = words[0].Contains("MB");
+                                        if (hasMB)
+                                            words[0] = words[0].Replace("MB", "");
+                                        if (float.TryParse(words[0], out value))
+                                        {
+                                            if (hasMB == false)
+                                                value /= (1024 * 1024);
+                                            GetRowEntry((int)ParseState.MEMORY_STATS, "Stat Memory", key).AddExtraColume("StatGroup", fileName, parKey);
+                                            GetRowEntry((int)ParseState.MEMORY_STATS, "Stat Memory", key).Add("SizeMem", fileName, value, "MB");
+                                        }
 
-                                    // 把unlua的内存加入到简报里
-                                    // unlua 容器分配的内存
-                                    if(line.Contains("STAT_UnLua_ContainerElementCache_Memory"))
-                                    {
-                                        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "UnLua ContainerElementCache Memory").Add("Size", fileName, value, "MB");
-                                        GetRowEntry((int)ParseState.LUA_MEMORY, "Lua Memory", "UnLua ContainerElementCache Memory").Add("Size", fileName, value, "MB");
+                                        // unlua 容器分配的内存
+                                        if (line.Contains("STATGROUP_UnLua"))
+                                        {                                            
+                                            GetRowEntry((int)ParseState.LUA_MEMORY, "Lua Memory", key).Add("Size", fileName, value, "MB");
+                                            key = "Group [UnLua]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_AI_EQS"))
+                                        {
+                                            key = "Group [AI_EQS]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_Audio"))
+                                        {
+                                            key = "Group [Audio]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_GeometryCache"))
+                                        {
+                                            key = "Group [GeometryCache]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }                                        
+                                        else if (line.Contains("STATGROUP_LLMOverhead") ||
+                                            line.Contains("STATGROUP_StatSystem"))
+                                        {
+                                            key = "Group [Overhead]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_MapBuildData"))
+                                        {
+                                            key = "Group [MapBuildData]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_MemoryStaticMesh"))
+                                        {
+                                            key = "Group [MemoryStaticMesh]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_Navigation"))
+                                        {
+                                            key = "Group [Navigation]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_OpenGLRHI"))
+                                        {
+                                            key = "Group [RHI]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if(line.Contains("STATGROUP_ParametrixAI"))
+                                        {
+                                            key = "Group [ParametrixAI]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_ParticleMem"))
+                                        {
+                                            key = "Group [ParticleMem]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_RHI"))
+                                        {
+                                            key = "Group [RHI]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_SceneMemory"))
+                                        {
+                                            key = "Group [SceneMemory]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_Shaders"))
+                                        {
+                                            key = "Group [Shaders]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_ShadowRendering"))
+                                        {
+                                            key = "Group [ShadowRendering]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_SlateMemory"))
+                                        {
+                                            key = "Group [Slate]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STATGROUP_PipelineStateCache"))
+                                        {
+                                            key = "Group [PipelineStateCache]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
                                     }
-                                    // unlua lua内存分配器分配的内存
-                                    else if (line.Contains("STAT_UnLua_Lua_Memory"))
+                                }
+                                else if (line.Contains("FMemStack") || line.Contains("Nametable") || line.Contains("AssetRegistry"))
+                                {
+                                    string[] segs = SplitAndTrim(line, '=');
+                                    string[] words = SplitAndTrim(segs[0], ' ');
+                                    string key = words[0];
+                                    float mb;
+                                    words = SplitAndTrim(segs[1], ' ');
+                                    if (float.TryParse(words[0], out mb))
                                     {
-                                        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "UnLua Lua Memory").Add("Size", fileName, value, "MB");
-                                        GetRowEntry((int)ParseState.LUA_MEMORY, "Lua Memory", "UnLua Lua Memory").Add("Size", fileName, value, "MB");
+                                        key = "Group [" + key + "]";
+                                        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, mb, "MB");
                                     }
-                                    // unlua 为 function parameter 分配的内存
-                                    else if (line.Contains("STAT_UnLua_PersistentParamBuffer_Memory"))
+                                }
+                                else if (line.Contains("FPageAllocator"))
+                                {
+                                    string[] segs = SplitAndTrim(line, '=');
+                                    string[] words = SplitAndTrim(segs[0], ' ');
+                                    string key = words[0];
+                                    float mbUsed, mbUnused;
+                                    string repstr = segs[1].Replace("[", "").Replace("]", "").Replace(" /", "");
+                                    words = SplitAndTrim(repstr, ' ');
+                                    if (float.TryParse(words[0], out mbUsed) && float.TryParse(words[1], out mbUnused))
                                     {
-                                        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "UnLua PersistentParamBuffer Memory").Add("Size", fileName, value, "MB");
-                                        GetRowEntry((int)ParseState.LUA_MEMORY, "Lua Memory", "UnLua PersistentParamBuffer Memory").Add("Size", fileName, value, "MB");
+                                        key = "Group [" + key + "]";
+                                        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, (mbUsed + mbUnused), "MB");
                                     }
-                                    // unlua 为 function out parameter 分配的内存
-                                    else if (line.Contains("STAT_UnLua_OutParmRec_Memory"))
-                                    {
-                                        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", "UnLua OutParmRec Memory").Add("Size", fileName, value, "MB");
-                                        GetRowEntry((int)ParseState.LUA_MEMORY, "Lua Memory", "UnLua OutParmRec Memory").Add("Size", fileName, value, "MB");
-                                    }                                    
                                 }
                             }
                             break;
@@ -941,6 +1154,9 @@ namespace MemReportParser
 
                         case ParseState.PLATFORM_MEM_STATS:
                             {
+								// 先忽略掉这部分的数据导出
+								continue;
+								
                                 // UE5:
                                 // Platform Memory Stats for Android 
                                 // Process Physical Memory: 1465.61 MB used, 1509.62 MB peak
@@ -1054,13 +1270,119 @@ namespace MemReportParser
                                 }
                             }
                             break;
+
+                        case ParseState.RHI_RENDER_TARGET2D_INFO:
+                            {
+                                AddRHIDetailInfo(line, fileName, ParseState.RHI_RENDER_TARGET2D_INFO, "RHIRenderTarget2D");
+                            }
+                            break;
+
+                        case ParseState.RHI_RENDER_TARGET3D_INFO:
+                            {
+                                AddRHIDetailInfo(line, fileName, ParseState.RHI_RENDER_TARGET3D_INFO, "RHIRenderTarget3D");
+                            }
+                            break;
+
+                        case ParseState.RHI_RENDER_TARGETCUBE_INFO:
+                            {
+                                AddRHIDetailInfo(line, fileName, ParseState.RHI_RENDER_TARGETCUBE_INFO, "RHIRenderTargetCube");
+                            }
+                            break;
+
+                        case ParseState.RHI_TEXTURE2D_INFO:
+                            {
+                                AddRHIDetailInfo(line, fileName, ParseState.RHI_TEXTURE2D_INFO, "RHITexture2D");
+                            }
+                            break;
+
+                        case ParseState.RHI_TEXTURE3D_INFO:
+                            {
+                                AddRHIDetailInfo(line, fileName, ParseState.RHI_TEXTURE3D_INFO, "RHITexture3D");
+                            }
+                            break;
+
+                        case ParseState.RHI_TEXTURECUBE_INFO:
+                            {
+                                AddRHIDetailInfo(line, fileName, ParseState.RHI_TEXTURECUBE_INFO, "RHITextureCube");
+                            }
+                            break;
+
+                        case ParseState.WWISE_MEMORY:
+                            {
+                                string[] words = line.Split(' ');
+                                if (words.Length == 5)
+                                {
+                                    int index = 1;
+                                    {
+                                        string[] substrs = words[index].Split('=');
+                                        int value;
+                                        if (int.TryParse(substrs[1], out value))
+                                        {
+                                            float mb = (float)(value) / 1024.0f / 1024.0f;
+                                            GetRowEntry((int)ParseState.WWISE_MEMORY, "WWISE Memory", "Total").Add(substrs[0], fileName, mb, "MB");
+
+                                            string key = "Group [Wwise]";
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, mb, "MB");
+                                        }
+                                    }
+                                }
+                                else if(words.Length == 6)
+                                {
+                                    string[] substrs = words[1].Split('=');
+                                    string memID = substrs[1];
+                                    int index = 2;
+                                    {                                        
+                                        substrs = words[index].Split('=');
+                                        int value;
+                                        if (int.TryParse(substrs[1], out value))
+                                        {
+                                            if (index <= 3)
+                                            {
+                                                float mb = (float)(value) / 1024.0f / 1024.0f;
+                                                GetRowEntry((int)ParseState.WWISE_MEMORY, "WWISE Memory", memID).Add(substrs[0], fileName, mb, "MB");
+                                            }
+                                            else
+                                            {
+                                                GetRowEntry((int)ParseState.WWISE_MEMORY, "WWISE Memory", memID).Add(substrs[0], fileName, value, "");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
                     }
                 }
             }
             SetGroupNeedCalcTotal("Lua Memory");
             SetGroupNeedCalcTotal("RHI Memory");
-            SetGroupNeedCalcTotal("Texture In Mem");
+            SetGroupNeedCalcTotal("TextureGroupInMem");
+            SetGroupNeedCalcTotal("TextureFormatInMem");
+            SetGroupNeedCalcTotal("TextureInMem");
             SetGroupNeedCalcTotal("Render Target Pools");
+            SetGroupNeedCalcTotal("Brief UE MemInfo");
+            SetGroupNeedCalcTotal("RHIRenderTarget2D");
+            SetGroupNeedCalcTotal("RHIRenderTarget3D");
+            SetGroupNeedCalcTotal("RHIRenderTargetCube");
+            SetGroupNeedCalcTotal("RHITexture2D");
+            SetGroupNeedCalcTotal("RHITexture3D");
+            SetGroupNeedCalcTotal("RHITextureCube");
+            //SetGroupNeedCalcTotal("WWISE Memory");
+        }
+
+        void AddRHIDetailInfo(string line, string fileName, ParseState state, string groupName)
+        {
+            const float invMB = 1.0f / 1024.0f / 1024.0f;
+            string[] words = line.Split(", ");
+            if (words.Length == 3)
+            {
+                string key = words[0] + " " + words[1];
+                string b = words[2].Replace("(byte)", "");
+                int nb;
+                if (int.TryParse(b, out nb))
+                {
+                    GetRowEntry((int)state, groupName, key).Add("SizeMem", fileName, nb * invMB, "(MB)");
+                }
+            }
         }
 
         public void DataRegulate(ref List<string> FileNameLst)
@@ -1260,7 +1582,7 @@ namespace MemReportParser
                                 workSheet.Range[ColName].BuiltInStyle = HeadStyle;
                                 
                             }
-                            if (ce.Entries.Count > 0)
+                            if (ce.Entries.Count > 1)
                             {
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].Value = string.Format("Diff_{0}[{1}]", ce.ColumeName, ce.ColumeTag);
@@ -1289,7 +1611,7 @@ namespace MemReportParser
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].NumberValue = (float)Math.Round(e.Value, 3);
                             }
-                            if (col.Entries.Count > 0)
+                            if (col.Entries.Count > 1)
                             {
                                 ColName = ColNames[colCount++] + (rowCount).ToString();
                                 workSheet.Range[ColName].NumberValue = (float)Math.Round(col.Diff, 3);
@@ -1346,7 +1668,7 @@ namespace MemReportParser
                             {
                                 strRow += string.Format("{0}[{1}]_[{2}], ", ce.ColumeName, ce.ColumeTag, e.MemReportFileName);
                             }
-                            if (ce.Entries.Count > 0)
+                            if (ce.Entries.Count > 1)
                             {
                                 strRow += string.Format("Diff_{0}[{1}], ", ce.ColumeName, ce.ColumeTag);
                             }
@@ -1370,7 +1692,7 @@ namespace MemReportParser
                             {
                                 strRow += (float)Math.Round(e.Value, 3) + ", ";
                             }
-                            if (col.Entries.Count > 0)
+                            if (col.Entries.Count > 1)
                             {
                                 strRow += (float)Math.Round(col.Diff, 3) + ", ";
                             }
@@ -1391,100 +1713,80 @@ namespace MemReportParser
             Console.WriteLine("Analyze Completed! Result File : " + outputCsvFilePath);
         }
 
-    }
-
-    public class Analyzer
-    {
-        public static void ParseArgs(string[] args, ArgParserLite argParser, out List<string> FileNameLst, out List<string> FileFullPathLst, out string diffCSVPath)
+        public void GenerateDataTree()
         {
-            for (int i = 0; i < args.Length; ++i)
+            var AndroidGroup = GetGroupEntry("Brief Android MemInfo");
+            if(AndroidGroup != null)
             {
-                Console.WriteLine(args[i]);
+                EntryTreeNode node = new EntryTreeNode();
+                var row = AndroidGroup.GetRowEntry("summary.total-pss");
+                node.NodeDesc = AndroidGroup.GroupName;
+                int colCount = row.ColumeEntries.Count;
+                ColumeEntry ce = row.ColumeEntries[colCount - 1];
+                node.MemSizeMB = ce.Entries[ce.Entries.Count - 1].Value;
+                node.GroupData = AndroidGroup;
+
+                DataTree.Add(node);
             }
-            FileNameLst = new List<string>();
-            FileFullPathLst = new List<string>();
-            // 解析第一个memreport文件
-            string memReportPath1 = argParser.GetValue("-1f", null);
-            // 解析第二个memreport文件
-            string memReportPath2 = argParser.GetValue("-2f", null);
-            // 解析差量分析的结果文件
-            diffCSVPath = argParser.GetValue("-o", null);
-            // 差量模式
-            string pattern = argParser.GetValue("-p", null);
-            if (string.IsNullOrEmpty(memReportPath1) == false)
+
+            var UEGroup = GetGroupEntry("Brief UE MemInfo");
+            if(UEGroup != null)
             {
-                FileNameLst.Add(System.IO.Path.GetFileNameWithoutExtension(memReportPath1));
-                FileFullPathLst.Add(memReportPath1);
-                Console.WriteLine(string.Format("MemReport File [{0}]: {1}", FileNameLst.Count, memReportPath1));
-            }
-            if (string.IsNullOrEmpty(memReportPath2) == false)
-            {
-                FileNameLst.Add(System.IO.Path.GetFileNameWithoutExtension(memReportPath2));
-                FileFullPathLst.Add(memReportPath2);
-                Console.WriteLine(string.Format("MemReport File [{0}]: {1}", FileNameLst.Count, memReportPath2));
-            }
-            if (string.IsNullOrEmpty(pattern) == false)
-            {
-                DataManager.EXPORT_AS_MULTISHEETS_EXCEL = pattern.Equals("xls", StringComparison.CurrentCultureIgnoreCase);
-                pattern = DataManager.EXPORT_AS_MULTISHEETS_EXCEL ? "xls" : pattern;
-            }
-            else
-            {
-                DataManager.EXPORT_AS_MULTISHEETS_EXCEL = true;
-                pattern = "xls";
-            }
-            if (string.IsNullOrEmpty(diffCSVPath) == false)
-            {
-                if (FileNameLst.Count == 2)
-                    diffCSVPath += string.Format("/Diff_{0}-{1}.{2}", FileNameLst[1], FileNameLst[0], pattern);
-                else if (FileNameLst.Count == 1)
-                    diffCSVPath += string.Format("/Diff_{0}.{1}", FileNameLst[0], pattern);
-                Console.WriteLine(string.Format("Compare Result File [{0}]: ", diffCSVPath));
-            }
-            else
-            {
-                if (FileNameLst.Count == 2)
-                    diffCSVPath = System.IO.Directory.GetCurrentDirectory() + string.Format("/Diff_{0}-{1}.{2}", FileNameLst[1], FileNameLst[0], pattern);
-                else if (FileNameLst.Count == 1)
-                    diffCSVPath = System.IO.Directory.GetCurrentDirectory() + string.Format("/Diff_{0}.{1}", FileNameLst[0], pattern);
-                Console.WriteLine(string.Format("Compare Result File [{0}]: ", diffCSVPath));
+                EntryTreeNode nodeUE = new EntryTreeNode();
+                var row = UEGroup.GetRowEntry("[TotalStatistics]");
+                nodeUE.NodeDesc = UEGroup.GroupName;
+                int colCount = row.ColumeEntries.Count;
+                ColumeEntry ce = row.ColumeEntries[colCount - 1];
+                nodeUE.MemSizeMB = ce.Entries[ce.Entries.Count - 1].Value;
+                nodeUE.GroupData = UEGroup;
+
+                foreach(var key in UEGroup.RowDatas.Keys)
+                {
+                    if (key.Equals("[TotalStatistics]"))
+                        continue;
+
+                    row = UEGroup.RowDatas[key];
+                    string[] words = key.Split(":");
+                    string groupName = words[0];
+                    colCount = row.ColumeEntries.Count;
+                    ce = row.ColumeEntries[colCount - 1];
+                    float MemSizeMB = ce.Entries[ce.Entries.Count - 1].Value;
+
+                    EntryTreeNode nodeGroup = null;
+                    if (nodeUE.SubNodes.Count == 0)
+                    {
+                        nodeGroup = new EntryTreeNode();
+                        nodeGroup.NodeDesc = groupName;
+                        nodeGroup.MemSizeMB = MemSizeMB;
+                    }
+                    else
+                    {
+                        foreach(var subNode in nodeUE.SubNodes)
+                        {
+                            if(subNode.NodeDesc == groupName)
+                            {
+                                nodeGroup = subNode;
+                                break;
+                            }
+                        }
+                        nodeGroup.MemSizeMB += MemSizeMB;
+                    }
+                    EntryTreeNode nodeSub = new EntryTreeNode();
+                    nodeSub.NodeDesc = key;
+                    nodeSub.MemSizeMB = MemSizeMB;
+                    nodeGroup.SubNodes.Add(nodeSub);
+
+                    if(groupName.Equals("Group [UObject]"))
+                    {
+                        nodeGroup.GroupData = GetGroupEntry("Obj Classes");
+                    }
+                    else if(groupName.Equals("Group [RHI]"))
+                    {
+                        nodeGroup.GroupData = GetGroupEntry("RHI Memory");
+                    }
+                }
             }
         }
-
-        public static string DoAnalyze(string[] args)
-        {
-            ArgParserLite argParser = new ArgParserLite(args);
-            List<string> FileNameLst;
-            List<string> FileFullPathLst;
-            string diffCSVPath;
-            ParseArgs(args, argParser, out FileNameLst, out FileFullPathLst, out diffCSVPath);
-
-            if (FileNameLst.Count == 0 || argParser.GetOption("-h"))
-            {
-                Console.WriteLine("Parse UE4 MemReport files to see memory usage over time. ");
-                Console.WriteLine("Analyze 2 memreports and output the diff to file.");
-                Console.WriteLine("");
-                Console.WriteLine("Usage:");
-                Console.WriteLine("  -1f <memreport full path> Specify the first memreport file full path.");
-                Console.WriteLine("     eg: -1f D:/UEProjs/ue4memreportparser/MemReports/01-17.19.54.memreport");
-                Console.WriteLine("");
-                Console.WriteLine("  -2f <memreport full path> Specify the second memreport file full path.");
-                Console.WriteLine("     eg: -2f D:/UEProjs/ue4memreportparser/MemReports/30-18.40.46.memreport");
-                Console.WriteLine("");
-                Console.WriteLine("  -o <compare result csv folder path> ");
-                Console.WriteLine("     eg: -o D:/UEProjs/ue4memreportparser/MemReports");
-                Console.WriteLine("");
-                Console.WriteLine("  -p <file extension> ");
-                Console.WriteLine("     eg: -p xls");
-                Console.WriteLine("");
-                Console.WriteLine("  -h <help info>");
-                return null;
-            }
-
-            DataManager dataMgr = new DataManager();
-            // 解析并输出结果
-            dataMgr.AnalyzeAndOutputResults(ref FileNameLst, ref FileFullPathLst, diffCSVPath);
-            return diffCSVPath;
-        }
     }
+
 }

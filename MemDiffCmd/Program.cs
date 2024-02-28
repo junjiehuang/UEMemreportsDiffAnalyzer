@@ -34,7 +34,7 @@ namespace MemReportParser
                 };
             }
 #endif
-            Analyzer.DoAnalyze(args);
+            Core.Analyzer.DoAnalyze(args);
         }
     }
 }

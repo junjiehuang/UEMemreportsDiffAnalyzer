@@ -85,7 +85,7 @@ namespace MemDiffApp
             }
             cmdargs.Add("-0");
             cmdargs.Add(RetOutFolder);            
-            string reportfile = Analyzer.DoAnalyze(cmdargs.ToArray());
+            string reportfile = Core.Analyzer.DoAnalyze(cmdargs.ToArray());
 
             if(reportfile != null)
             {
