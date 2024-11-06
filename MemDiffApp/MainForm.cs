@@ -21,7 +21,7 @@ namespace MemDiffApp
 
         private void button1_selfile_Click(object sender, EventArgs e)
         {
-            this.textBox_file1.Text = Core.Util.GetSelectedFile(Globals.GLastSelectedFolder);
+            this.textBox_file1.Text = Globals.GetSelectedFile(Globals.GLastSelectedFolder);
             if (string.IsNullOrEmpty(this.textBox_file1.Text) == false)
             {
                 FileInfo fi = new FileInfo(this.textBox_file1.Text);
@@ -31,7 +31,7 @@ namespace MemDiffApp
 
         private void button2_selfile_Click(object sender, EventArgs e)
         {
-            this.textBox_file2.Text = Core.Util.GetSelectedFile(Globals.GLastSelectedFolder);
+            this.textBox_file2.Text = Globals.GetSelectedFile(Globals.GLastSelectedFolder);
             if (string.IsNullOrEmpty(this.textBox_file2.Text) == false)
             {
                 FileInfo fi = new FileInfo(this.textBox_file2.Text);

@@ -72,5 +72,19 @@ namespace MemDiffApp
                 cfg.save();
             }
         }
+
+        public static string GetSelectedFile(string initDir = @"E:\")
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Multiselect = false;//该值确定是否可以选择多个文件
+            dialog.Title = "请选择文件";
+            dialog.Filter = "所有文件(*.memreport)|*.memreport";
+            dialog.InitialDirectory = initDir;
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                return dialog.FileName;
+            }
+            return null;
+        }
     }
 }

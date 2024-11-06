@@ -48,6 +48,13 @@ namespace MemReportParser
         PERSISTENT_LEVEL_SPAWNED_ACTORS = 1100,
         LUA_MEMORY = 1200,   
         WWISE_MEMORY = 1300,
+        TEXTURE_DISTRIBUTION = 1400,
+        TEXTURE_DISTRIBUTION_RenderTarget2D = 1401,
+        TEXTURE_DISTRIBUTION_RenderTarget3D = 1402,
+        TEXTURE_DISTRIBUTION_RenderTargetCube = 1403,
+        TEXTURE_DISTRIBUTION_Texture2D = 1404,
+        TEXTURE_DISTRIBUTION_Texture3D = 1405,
+        TEXTURE_DISTRIBUTION_TextureCube = 1406,
     }
 
     // 一个数据单元
@@ -371,6 +378,9 @@ namespace MemReportParser
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(file);
                 string[] lines = System.IO.File.ReadAllLines(file);
                 ParseState state = ParseState.SEARCHING;
+                string texDistCat = "";
+                ParseState catState = ParseState.TEXTURE_DISTRIBUTION;
+
                 foreach (string line in lines)
                 {
                     //Obj List:
@@ -488,6 +498,10 @@ namespace MemReportParser
                     else if (line.Contains("WWISE "))
                     {
                         state = ParseState.WWISE_MEMORY;
+                    }
+                    else if (line.Contains("Texture Memory Distribution Brief Start"))
+                    {
+                        state = ParseState.TEXTURE_DISTRIBUTION;
                     }
 
                     switch (state)
@@ -1347,6 +1361,51 @@ namespace MemReportParser
                                             }
                                         }
                                     }
+                                }
+                            }
+                            break;
+
+                        case ParseState.TEXTURE_DISTRIBUTION:
+                            {
+                                string[] CATEGORIE_NAMES = { 
+                                    "RHIRenderTarget2D", "RHIRenderTarget3D", "RHIRenderTargetCube", 
+                                    "RHITexture2D", "RHITexture3D", "RHITextureCube", };
+                                ParseState[] CATEGORIE_STATES = { 
+                                    ParseState.TEXTURE_DISTRIBUTION_RenderTarget2D, ParseState.TEXTURE_DISTRIBUTION_RenderTarget3D, ParseState.TEXTURE_DISTRIBUTION_RenderTargetCube,
+                                    ParseState.TEXTURE_DISTRIBUTION_Texture2D, ParseState.TEXTURE_DISTRIBUTION_Texture3D, ParseState.TEXTURE_DISTRIBUTION_TextureCube, };
+
+                                if (line.Contains("Name,"))
+                                    continue;
+                                else if (line.Contains("Texture Memory Distribution Brief End"))
+                                {
+                                    state = ParseState.SEARCHING;
+                                    continue;
+                                }
+                                string[] words = line.Split(',');
+                                if (words.Length == 3)
+                                {
+                                    int count = int.Parse(words[1]);
+                                    long mem = long.Parse(words[2].Replace("(byte)", ""));
+                                    float mb = mem / 1024.0f / 1024.0f;
+                                    string rowtag = "";
+                                    bool isCat = false;
+                                    for (int i = 0; i < 6; ++i)
+                                    {
+                                        if (words[0].Contains(CATEGORIE_NAMES[i]))
+                                        {
+                                            texDistCat = CATEGORIE_NAMES[i];
+                                            rowtag = "[TotalStatistic]";
+                                            catState = CATEGORIE_STATES[i];
+                                            isCat = true;
+                                            break;
+                                        }
+                                    }
+                                    if (isCat == false)
+                                    {
+                                        rowtag = words[0];
+                                    }
+                                    GetRowEntry((int)catState, texDistCat + "DistributionBrief", rowtag).Add("Count", fileName, count, "");
+                                    GetRowEntry((int)catState, texDistCat + "DistributionBrief", rowtag).Add("MemSize(MB)", fileName, mb, "(MB)");
                                 }
                             }
                             break;

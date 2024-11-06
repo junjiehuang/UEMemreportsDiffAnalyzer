@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+//using System.Windows.Forms;
 
 namespace Core
 {
     public class Util
     {
-        public static string GetSelectedFile(string initDir = @"E:\")
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Multiselect = false;//该值确定是否可以选择多个文件
-            dialog.Title = "请选择文件";
-            dialog.Filter = "所有文件(*.memreport)|*.memreport";
-            dialog.InitialDirectory = initDir;
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                return dialog.FileName;
-            }
-            return null;
-        }
+        //public static string GetSelectedFile(string initDir = @"E:\")
+        //{
+        //    OpenFileDialog dialog = new OpenFileDialog();
+        //    dialog.Multiselect = false;//该值确定是否可以选择多个文件
+        //    dialog.Title = "请选择文件";
+        //    dialog.Filter = "所有文件(*.memreport)|*.memreport";
+        //    dialog.InitialDirectory = initDir;
+        //    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        //    {
+        //        return dialog.FileName;
+        //    }
+        //    return null;
+        //}
 
         public static string RunCmd(string cmd)
         {
