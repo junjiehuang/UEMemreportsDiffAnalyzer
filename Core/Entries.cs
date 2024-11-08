@@ -1063,12 +1063,18 @@ namespace MemReportParser
                                             key = "Group [MapBuildData]: " + key;
                                             GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
                                         }
-                                        else if (line.Contains("STATGROUP_MemoryStaticMesh"))
-                                        {
-                                            key = "Group [MemoryStaticMesh]: " + key;
-                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
-                                        }
-                                        else if (line.Contains("STATGROUP_Navigation"))
+                                        //else if (line.Contains("STATGROUP_MemoryStaticMesh"))
+                                        //{
+                                        //    key = "Group [MemoryStaticMesh]: " + key;
+                                        //    GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        //}
+                                        //else if (line.Contains("STATGROUP_MemorySkeletalMesh"))
+                                        //{
+                                        //    key = "Group [MemorySkeletalMesh]: " + key;
+                                        //    GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        //}
+                                        else if (//line.Contains("STATGROUP_Navigation") ||
+                                            line.Contains("STAT_NavigationMemory"))
                                         {
                                             key = "Group [Navigation]: " + key;
                                             GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
@@ -1103,11 +1109,11 @@ namespace MemReportParser
                                             key = "Group [Shaders]: " + key;
                                             GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
                                         }
-                                        else if (line.Contains("STATGROUP_ShadowRendering"))
-                                        {
-                                            key = "Group [ShadowRendering]: " + key;
-                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
-                                        }
+                                        //else if (line.Contains("STATGROUP_ShadowRendering"))
+                                        //{
+                                        //    key = "Group [ShadowRendering]: " + key;
+                                        //    GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        //}
                                         else if (line.Contains("STATGROUP_SlateMemory"))
                                         {
                                             key = "Group [Slate]: " + key;
@@ -1118,9 +1124,48 @@ namespace MemReportParser
                                             key = "Group [PipelineStateCache]: " + key;
                                             GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
                                         }
+                                        else if (line.Contains("STATGROUP_PixUI"))
+                                        {
+                                            key = "Group [PixUI(Pandora)]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STAT_MemoryPhysXTotalAllocationSize"))
+                                        {
+                                            key = "Group [PhysX]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STAT_PageAllocatorFree") ||
+                                            line.Contains("STAT_PageAllocatorUsed") ||
+                                            line.Contains("STAT_MemStackLargeBLock"))
+                                        {
+                                            key = "Group [PageAndMemStack]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STAT_PersistentUberGraphFrameMemory"))
+                                        {
+                                            key = "Group [BlueprintVM]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STAT_PrecomputedVisibilityMemory"))
+                                        {
+                                            key = "Group [PrecomputeVisibility]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STAT_NameTableMemorySize"))
+                                        {
+                                            key = "Group [NameTable]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }
+                                        else if (line.Contains("STAT_MemoryICUDataFileAllocationSize"))
+                                        {
+                                            key = "Group [ICU]: " + key;
+                                            GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, value, "MB");
+                                        }                                        
                                     }
                                 }
-                                else if (line.Contains("FMemStack") || line.Contains("Nametable") || line.Contains("AssetRegistry"))
+                                else if (//line.Contains("FMemStack") || 
+                                    //line.Contains("Nametable") ||
+                                    line.Contains("AssetRegistry"))
                                 {
                                     string[] segs = SplitAndTrim(line, '=');
                                     string[] words = SplitAndTrim(segs[0], ' ');
@@ -1133,20 +1178,20 @@ namespace MemReportParser
                                         GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, mb, "MB");
                                     }
                                 }
-                                else if (line.Contains("FPageAllocator"))
-                                {
-                                    string[] segs = SplitAndTrim(line, '=');
-                                    string[] words = SplitAndTrim(segs[0], ' ');
-                                    string key = words[0];
-                                    float mbUsed, mbUnused;
-                                    string repstr = segs[1].Replace("[", "").Replace("]", "").Replace(" /", "");
-                                    words = SplitAndTrim(repstr, ' ');
-                                    if (float.TryParse(words[0], out mbUsed) && float.TryParse(words[1], out mbUnused))
-                                    {
-                                        key = "Group [" + key + "]";
-                                        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, (mbUsed + mbUnused), "MB");
-                                    }
-                                }
+                                //else if (line.Contains("FPageAllocator"))
+                                //{
+                                //    string[] segs = SplitAndTrim(line, '=');
+                                //    string[] words = SplitAndTrim(segs[0], ' ');
+                                //    string key = words[0];
+                                //    float mbUsed, mbUnused;
+                                //    string repstr = segs[1].Replace("[", "").Replace("]", "").Replace(" /", "");
+                                //    words = SplitAndTrim(repstr, ' ');
+                                //    if (float.TryParse(words[0], out mbUsed) && float.TryParse(words[1], out mbUnused))
+                                //    {
+                                //        key = "Group [" + key + "]";
+                                //        GetRowEntry((int)ParseState.BRIEF_UE_MEMORY_INFO, "Brief UE MemInfo", key).Add("Size", fileName, (mbUsed + mbUnused), "MB");
+                                //    }
+                                //}
                             }
                             break;
 
