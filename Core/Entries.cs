@@ -55,6 +55,7 @@ namespace MemReportParser
         TEXTURE_DISTRIBUTION_Texture2D = 1404,
         TEXTURE_DISTRIBUTION_Texture3D = 1405,
         TEXTURE_DISTRIBUTION_TextureCube = 1406,
+        DUMP_ALL_TEXTURES_DETAIL = 1500,
     }
 
     // 一个数据单元
@@ -503,6 +504,11 @@ namespace MemReportParser
                     {
                         state = ParseState.TEXTURE_DISTRIBUTION;
                     }
+                    else if (line.Contains("DumpAllTexturesDetail"))
+                    {
+                        state = ParseState.DUMP_ALL_TEXTURES_DETAIL;
+                    }
+
 
                     switch (state)
                     {
@@ -1451,6 +1457,53 @@ namespace MemReportParser
                                     }
                                     GetRowEntry((int)catState, texDistCat + "DistributionBrief", rowtag).Add("Count", fileName, count, "");
                                     GetRowEntry((int)catState, texDistCat + "DistributionBrief", rowtag).Add("MemSize(MB)", fileName, mb, "(MB)");
+                                }
+                            }
+                            break;
+
+                        case ParseState.DUMP_ALL_TEXTURES_DETAIL:
+                            {
+                                if (line.Contains("MemReport: End command \"DumpAllTexturesDetail\""))
+                                {
+                                    state = ParseState.SEARCHING;
+                                    continue;
+                                }
+								// "Ptr, Bytes, DebugName, OwnerName, ClassName, TextureDimension, CreateFlags, PixelFormat, UAVFormat, Width, Height, Depth, ArraySize, NumMips, NumSamples"
+                                if (line[0] == '0' && line[1] == '0')
+                                {
+                                    string[] segs = line.Split(", ");
+                                    if (segs.Length >= 15)
+                                    {
+                                        int memBytes = int.Parse(segs[1]);
+                                        string DebugName = segs[2];
+                                        string OwnerName = segs[3];
+                                        string ClassName = segs[4];
+                                        string TextureDimension = segs[5];
+                                        string CreateFlags = segs[6];
+                                        string PixelFormat = segs[7];
+                                        string UAVFormat = segs[8];
+                                        int width = int.Parse(segs[9]);
+                                        int height = int.Parse(segs[10]);
+                                        int depth = int.Parse(segs[11]);
+                                        int arraySize = int.Parse(segs[12]);
+                                        int numMips = int.Parse(segs[13]);    
+                                        int numSamples = int.Parse(segs[14]);
+                                        string uniqueName = DebugName + "_" + segs[0];
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).Add("MemBytes", fileName, memBytes);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).AddExtraColume("DebugName", fileName, DebugName);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).AddExtraColume("OwnerName", fileName, OwnerName);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).AddExtraColume("ClassName", fileName, ClassName);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).AddExtraColume("TextureDimension", fileName, TextureDimension);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).AddExtraColume("CreateFlags", fileName, CreateFlags);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).AddExtraColume("PixelFormat", fileName, PixelFormat);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).AddExtraColume("UAVFormat", fileName, UAVFormat);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).Add("Width", fileName, width);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).Add("Height", fileName, height);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).Add("Depth", fileName, depth);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).Add("ArraySize", fileName, arraySize);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).Add("NumMips", fileName, numMips);
+                                        GetRowEntry((int)ParseState.DUMP_ALL_TEXTURES_DETAIL, "AllTexturesDetail", uniqueName).Add("NumSamples", fileName, numSamples);
+                                    }
                                 }
                             }
                             break;
