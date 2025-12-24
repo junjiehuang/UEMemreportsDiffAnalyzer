@@ -92,6 +92,10 @@ namespace MemDiffApp
                 //System.Diagnostics.Process.Start("explorer.exe", reportfile);
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.FileName = @"C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.exe";
+                if (File.Exists(startInfo.FileName) == false)
+                {
+                    startInfo.FileName = @"C:\\Program Files (x86)\\Microsoft Office\\root\\Office16\\EXCEL.EXE";
+                }
                 startInfo.Arguments = reportfile;
                 Process.Start(startInfo);
             }
